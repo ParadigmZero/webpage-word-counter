@@ -12,4 +12,5 @@ npm init
 
 ## Running ( interactive with Nodemon )
 
-npm start
+npm start ( interactive mode with Nodemon )
+npm run simple ( running without Nodemon )
