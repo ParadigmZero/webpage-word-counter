@@ -39,11 +39,11 @@ A test site has been setup, which hopefully should remain active throughout this
 
 ## Manual testing (browser)
 
-`localhost:3000/?page=<URL to page>`
+`localhost:4000/?page=<URL to page>`
 
 e.g.
 
-<http://localhost:3000/?page=http://paradigmzero.github.io/webpagewordcounter/index.html>
+<http://localhost:4000/?page=http://paradigmzero.github.io/webpagewordcounter/index.html>
 
 
 ## Postman

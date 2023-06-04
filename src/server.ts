@@ -1,8 +1,11 @@
 import express from 'express';
 import { Request, Response } from 'express';
 import wordsCounter from 'word-counting'
+// import cors from 'cors';
 
 const app = express();
+
+// app.use(cors());
 
 // Take in the page, we are going to count the words on, in a query parameter named 'page'
 app.get('/', async (req : Request, res : Response) => {
@@ -49,6 +52,6 @@ app.get('/', async (req : Request, res : Response) => {
 });
 
 
-app.listen(3000, () => {
-  console.log('Application started on port 3000!');
+app.listen(4000, () => {
+  console.log('Application started on port 4000!');
 });

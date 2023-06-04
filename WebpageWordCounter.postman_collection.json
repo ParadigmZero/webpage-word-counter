@@ -25,12 +25,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/",
+					"raw": "http://localhost:4000/",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "3000",
+					"port": "4000",
 					"path": [
 						""
 					]
@@ -57,12 +57,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/?page=http://www.incompleteurl",
+					"raw": "http://localhost:4000/?page=http://www.incompleteurl",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "3000",
+					"port": "4000",
 					"path": [
 						""
 					],
@@ -95,12 +95,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/?page=http://www.google.com",
+					"raw": "http://localhost:4000/?page=http://www.google.com",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "3000",
+					"port": "4000",
 					"path": [
 						""
 					],
@@ -133,12 +133,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/?page=lukesmith.xyz",
+					"raw": "http://localhost:4000/?page=lukesmith.xyz",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "3000",
+					"port": "4000",
 					"path": [
 						""
 					],
@@ -175,12 +175,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/?page=http://paradigmzero.github.io/webpagewordcounter/index.html",
+					"raw": "http://localhost:4000/?page=http://paradigmzero.github.io/webpagewordcounter/index.html",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "3000",
+					"port": "4000",
 					"path": [
 						""
 					],
