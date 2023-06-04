@@ -29,20 +29,67 @@ app.get('/', async (req : Request, res : Response) => {
   }
 
   // Try fetching the webpage from the URL
+  let count = await embeddedCheck(0, (req.query.page as string));
+
+  if(count < 0)
+  {
+    res.status(404).send(`Error fetching page, or embedded page at ${req.query.page}`);
+    return;
+  }
+
+  res.status(200).send(count.toString());
+});
+
+async function embeddedCheck(count : number, url : string) : Promise<number>
+{
+  let body;
+  // 1.  get word count for current page
   try {
-    const response = await fetch(`${req.query.page}`);
+    const response = await fetch(url);
     // Convert the response into text
     body = await response.text();
-
   } catch (error) {
     console.log("Error fetching page:")
     console.log(error);
-    res.status(404).send(`Error retrieving page from URL:\n${req.query.page}\ncheck this is a valid url.`);
-    return;
+    // signal issue fetching the page
+    return -1;
   }
+
+  count += wordsCounter(body, { isHtml: true }).wordsCount;
+
+  // 2. get word count for all embedded html pages
   
-  res.status(200).send(wordsCounter(body, { isHtml: true }).wordsCount.toString());
-});
+  let iframes : RegExpMatchArray | null = body.match(/<[ ]*iframe[^>]*>/g);
+  //extract data
+  if(iframes !== null)
+  {
+    iframes.forEach((iframe) => {
+      console.log(iframe);
+      embeddedCheck(count,"figureout");
+    });
+  }
+
+  let embeds : RegExpMatchArray | null = body.match(/<[ ]*embed[^>]*>/g);
+  // extract source if correct type
+  console.log(embeds);
+
+
+  let objects : RegExpMatchArray | null = body.match(/<[ ]*object[^>]*>/g);
+  // extract data if .htm(l) file
+  console.log(objects);
+
+
+  return count;
+}
+
+/*
+ Convert a partial url, e.g. 'about.html', './about.html', './me/about.html' etc
+ to full URL, e.g. 'http://www.mysite.com/about.html'
+ */
+function urlResolver(originalUrl : string, newUrl : string)
+{
+  // ^(.\/|\/)?[a-zA-Z0-9-_ ]*.[x]?htm[l]?$
+}
 
 
 app.listen(4000, () => {
