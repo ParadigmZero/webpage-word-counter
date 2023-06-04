@@ -57,6 +57,7 @@ Options:
 This requires Node.JS/npm to be installed, and then Newman to be installed ( i.e. `npm install -g newman` )
 
 Run as follows:
+
 `newman run WebpageWordCounter.postman_collection.json`
 
 

@@ -30,6 +30,7 @@ app.get('/', async (req : Request, res : Response) => {
     const response = await fetch(`${req.query.page}`);
     // Convert the response into text
     body = await response.text();
+
   } catch (error) {
     console.log("Error fetching page:")
     console.log(error);
@@ -37,8 +38,14 @@ app.get('/', async (req : Request, res : Response) => {
     return;
   }
 
-
-  res.send(wordsCounter(body, { isHtml: true }).wordsCount.toString());
+  // console.log(body);
+  // let n : number = await wordsCounter(body, { isHtml: true }).wordsCount
+  // console.log("number of words is:");
+  // console.log(body);
+  // console.log(n);
+  // console.log(wordsCounter(body, { isHtml: true }).wordsCount.toString());
+  res.status(200).send(wordsCounter(body, { isHtml: true }).wordsCount.toString());
+  // return;
 });
 
 
