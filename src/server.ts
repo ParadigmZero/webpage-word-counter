@@ -30,7 +30,7 @@ app.get('/', async (req : Request, res : Response) => {
   }
 
   // Try fetching the webpage from the URL
-  let count = await embeddedCheck(0, (req.query.page as string));
+  let count = await embeddedCheck((req.query.page as string));
 
   if(count < 0)
   {
@@ -41,9 +41,9 @@ app.get('/', async (req : Request, res : Response) => {
   res.status(200).send(count.toString());
 });
 
-async function embeddedCheck(countIn : number, url : string) : Promise<number>
+async function embeddedCheck(url : string) : Promise<number>
 {
-  let count = countIn;
+  let count = 0;
   let body;
   // 1.  get word count for current page
   try {
@@ -77,7 +77,7 @@ async function embeddedCheck(countIn : number, url : string) : Promise<number>
       let temp = iframe.match(/src[ ]*=[ ]*["-][^'^"]*["']/);
         if(temp !== undefined && temp !== null)
         {
-          count += await embeddedCheck(count,urlResolver(url,temp[0].replace(/src[ ]*=[ ]*/,'').replace(/"([^"]*)"/,"$1")))
+          count += await embeddedCheck(urlResolver(url,temp[0].replace(/src[ ]*=[ ]*/,'').replace(/"([^"]*)"/,"$1")))
         }
     }  
   }
