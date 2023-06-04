@@ -193,6 +193,90 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Valid site - uncountable JS text - 200 Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"  pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"JavaScript rendered text, will not be counted\",()=> {\r",
+							"    pm.expect(pm.response.json()).to.eql(0);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4000/?page=paradigmzero.github.io/webpagewordcounter/scriptText.html",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						""
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "paradigmzero.github.io/webpagewordcounter/scriptText.html"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Valid site - uncountable embedded HTML - 200 Copy 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"  pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Embedded HTML, since not immediately visible in source, cannot be counted\",()=> {\r",
+							"    pm.expect(pm.response.json()).to.eql(0);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4000/?page=paradigmzero.github.io/webpagewordcounter/depth1embedded.html",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						""
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "paradigmzero.github.io/webpagewordcounter/depth1embedded.html"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

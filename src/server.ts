@@ -1,11 +1,11 @@
 import express from 'express';
 import { Request, Response } from 'express';
 import wordsCounter from 'word-counting'
-// import cors from 'cors';
+import cors from 'cors';
 
 const app = express();
 
-// app.use(cors());
+app.use(cors());
 
 // Take in the page, we are going to count the words on, in a query parameter named 'page'
 app.get('/', async (req : Request, res : Response) => {
@@ -40,15 +40,8 @@ app.get('/', async (req : Request, res : Response) => {
     res.status(404).send(`Error retrieving page from URL:\n${req.query.page}\ncheck this is a valid url.`);
     return;
   }
-
-  // console.log(body);
-  // let n : number = await wordsCounter(body, { isHtml: true }).wordsCount
-  // console.log("number of words is:");
-  // console.log(body);
-  // console.log(n);
-  // console.log(wordsCounter(body, { isHtml: true }).wordsCount.toString());
+  
   res.status(200).send(wordsCounter(body, { isHtml: true }).wordsCount.toString());
-  // return;
 });
 
 

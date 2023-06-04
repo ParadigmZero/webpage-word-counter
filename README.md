@@ -35,7 +35,11 @@ Take down the container
 
 A test site has been setup, which hopefully should remain active throughout this repositories lifecycle:
 
+Site (sample page):
 <http://paradigmzero.github.io/webpagewordcounter/index.html>
+
+Repository:
+<https://github.com/ParadigmZero/paradigmzero.github.io>
 
 ## Manual testing (browser)
 
