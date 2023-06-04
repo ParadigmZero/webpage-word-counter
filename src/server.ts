@@ -88,7 +88,16 @@ async function embeddedCheck(count : number, url : string) : Promise<number>
  */
 function urlResolver(originalUrl : string, newUrl : string)
 {
-  // ^(.\/|\/)?[a-zA-Z0-9-_ ]*.[x]?htm[l]?$
+  /*
+  regex for matching a short url
+e.g.
+  ^(.\/|\/)?[a-zA-Z0-9-_ ]*.[x]?htm[l]?$
+
+  let bool = /^(.\/|\/)?[a-zA-Z0-9-_ ]*.[x]?htm[l]?$/.test('./mysite.html');
+
+
+  */ 
+  
 }
 
 
