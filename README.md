@@ -2,7 +2,7 @@
 
 A simple API that counts the visible words on a web page (i.e. what the user sees).
 
-Simply perform a HTTP GET request, passing in a query parameter named `page` with the url to the page ( see Testing section ).
+Simply perform a HTTP GET request, passing in a query parameter named `page` with the url to the page. See [testing](#testing).
 
 # Running
 
