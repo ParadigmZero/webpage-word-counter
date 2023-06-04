@@ -163,7 +163,7 @@
 							"  pm.expect(pm.response.code).to.eql(200);\r",
 							"});\r",
 							"\r",
-							"pm.test(\"There are 12 visible words on this page\",()=> {\r",
+							"pm.test(\"There are 20 visible words on this page\",()=> {\r",
 							"    pm.expect(pm.response.json()).to.eql(20);\r",
 							"});"
 						],
