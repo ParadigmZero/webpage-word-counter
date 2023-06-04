@@ -195,7 +195,7 @@
 			"response": []
 		},
 		{
-			"name": "Valid site - uncountable JS text - 200 Copy",
+			"name": "Valid site - uncountable JS text - 200",
 			"event": [
 				{
 					"listen": "test",
@@ -237,7 +237,7 @@
 			"response": []
 		},
 		{
-			"name": "Valid site - uncountable embedded HTML - 200 Copy 2",
+			"name": "Valid site - uncountable embedded HTML - 200",
 			"event": [
 				{
 					"listen": "test",
