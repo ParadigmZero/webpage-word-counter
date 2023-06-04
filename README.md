@@ -4,6 +4,16 @@ A simple API that counts the visible words on a web page (i.e. what the user see
 
 Simply perform a HTTP GET request, passing in a query parameter named `page` with the url to the page. See [testing](#testing).
 
+# Details/limitations of word count
+
+This performs a "shallow word count" on HTML elements, using the [word-counting library](https://www.npmjs.com/package/word-counting/).
+
+Tags, comments, script text .etc are ignored, and all rendered HTML text is counted.
+
+However, JavaScript rendered text, as well as embedded HTML is not counted in the word count.
+
+Text within `<noscript>` tags is counted in the word count, even though in the majority of situations, this will not be displayed to a user.
+
 # Running
 
 Options:
