@@ -1,8 +1,12 @@
+/**
+ * @author Joseph Alton
+ */
 import express from 'express';
 import { Request, Response, Express } from 'express';
 import wordsCounter from 'word-counting'
 import cors from 'cors';
 const app : Express = express();
+const port : number = 4000;
 
 app.use(cors());
 
@@ -171,9 +175,6 @@ async function wordCount(url : string, successfulUrls : string[], failedUrls : s
   return count;
 }
 
-/*
-
- */
 /**
  * A helper function to convert a partial url if needed:
  * ./change.html -> http://www.mysite.com/change.html
@@ -194,6 +195,6 @@ function urlResolver(originalUrl : string, newUrl : string) : string {
 }
 
 
-app.listen(4000, () => {
-  console.log('Application started on port 4000!');
+app.listen(port, () => {
+  console.log(`Application started on port ${port}!`);
 });
