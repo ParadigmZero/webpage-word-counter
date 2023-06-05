@@ -34,7 +34,11 @@ app.get('/', async (req : Request, res : Response) => {
 
   if(failedUrls.length > 0)
   {
-    res.status(404).send(`Error fetching (embedded) page(s): ${arrayFormatter(failedUrls)}`);
+    /*
+     A "404 Not Found" is used in case, because even though some of the pages
+    may be found to count the words, not all are
+    */
+    res.status(404).send({count: count, message: `Error fetching ${failedUrls.length} (embedded) page(s)`, uncountedPages:failedUrls});
     return;
   }
 
@@ -162,19 +166,6 @@ function urlResolver(originalUrl : string, newUrl : string) : string {
   }
   // otherwise you will have to append this onto the end of the "base" url
   return `${originalUrl}${newUrl.replace(/^[.]/,'').replace(/\//,'')}`;
-}
-
-
-function arrayFormatter(arr : string[]) : string
-{
-  let temp = "";
-  for(let i=0; i < arr.length; i++)
-  {
-    temp += `${arr[i]} , `;
-  }
-
-  temp = temp.substring(0,temp.length-3);
-  return temp;
 }
 
 
