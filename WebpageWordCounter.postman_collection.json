@@ -47,6 +47,18 @@
 						"exec": [
 							"pm.test(\"Status code is 404\", () => {\r",
 							"  pm.expect(pm.response.code).to.eql(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Word count is 0\", () => {\r",
+							"  pm.expect(pm.response.json().wordCount).to.eql(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"There are no counted pages:\", () => {\r",
+							"  pm.expect(pm.response.json().countedPages.length).to.eql(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"There is one uncounted page\", () => {\r",
+							"  pm.expect(pm.response.json().uncountedPages.length).to.eql(1);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -164,7 +176,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"There are 20 visible words on this page\",()=> {\r",
-							"    pm.expect(pm.response.json()).to.eql(20);\r",
+							"    pm.expect(pm.response.json().wordCount).to.eql(20);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -205,8 +217,12 @@
 							"  pm.expect(pm.response.code).to.eql(200);\r",
 							"});\r",
 							"\r",
-							"pm.test(\"JavaScript rendered text, will not be counted\",()=> {\r",
-							"    pm.expect(pm.response.json()).to.eql(0);\r",
+							"pm.test(\"Wordcount will be 0, since JavaScript rendered text, will not be counted\",()=> {\r",
+							"    pm.expect(pm.response.json().wordCount).to.eql(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(`One page will be recorded as \"counted\"`, () => {\r",
+							"  pm.expect(pm.response.json().countedPages.length).to.eql(1);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -248,7 +264,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Valid (embedded) HTML will be counted\",()=> {\r",
-							"    pm.expect(pm.response.json()).to.eql(120);\r",
+							"    pm.expect(pm.response.json().wordCount).to.eql(120);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -290,7 +306,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Valid (embedded) HTML will be counted\",()=> {\r",
-							"    pm.expect(pm.response.json().count).to.eql(120);\r",
+							"    pm.expect(pm.response.json().wordCount).to.eql(120);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"One of the embedded HTML elements will fail to load\", ()=>{\r",

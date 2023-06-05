@@ -16,8 +16,14 @@ app.get('/', async (req : Request, res : Response) => {
     return;
   }
 
+  let count = 0;
   let successfulUrls : string[] = [];
   let failedUrls : string[] = [];
+  let responseBody : {message:string,wordCount?:number,countedPages?:string[],uncountedPages?:string[]} = 
+  {message:"",
+  wordCount:count,
+  countedPages:successfulUrls,
+  uncountedPages:failedUrls};
 
   // // Add a http:// to the entered url, if it is missing.
   if((req.query.page as string).substring(0,7).toLowerCase() !== 'http://'
@@ -30,19 +36,24 @@ app.get('/', async (req : Request, res : Response) => {
   }
 
   // Try fetching the webpage from the URL
-  let count = await wordCount((req.query.page as string), successfulUrls, failedUrls);
+  count = await wordCount((req.query.page as string), successfulUrls, failedUrls);
+
+  responseBody.wordCount = count;
 
   if(failedUrls.length > 0)
   {
+    responseBody.message=`Failed to fetch ${failedUrls.length} (embedded) page(s) for word count.`;
     /*
      A "404 Not Found" is used in case, because even though some of the pages
     may be found to count the words, not all are
     */
-    res.status(404).send({message: `Error fetching ${failedUrls.length} (embedded) page(s)`, count: count, countedPages: successfulUrls,uncountedPages:failedUrls});
+    res.status(404).send(responseBody);
     return;
   }
 
-  res.status(200).send(count.toString());
+  responseBody.message=`Success fetching ${successfulUrls.length} page(s) to word count.`
+
+  res.status(200).send(responseBody);
 });
 
 async function wordCount(url : string, successfulUrls : string[], failedUrls : string[]) : Promise<number>
