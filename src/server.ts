@@ -30,7 +30,7 @@ app.get('/', async (req : Request, res : Response) => {
   }
 
   // Try fetching the webpage from the URL
-  let count = await embeddedCheck((req.query.page as string));
+  let count = await wordCount((req.query.page as string));
 
   if(count < 0)
   {
@@ -41,7 +41,7 @@ app.get('/', async (req : Request, res : Response) => {
   res.status(200).send(count.toString());
 });
 
-async function embeddedCheck(url : string) : Promise<number>
+async function wordCount(url : string) : Promise<number>
 {
   let count = 0;
   let body;
@@ -54,7 +54,7 @@ async function embeddedCheck(url : string) : Promise<number>
   } catch (error) {
     console.log(`Error fetching page ${url}`)
     console.log(error);
-    // signal issue fetching the page
+    // signal issue fetching the page (in progress)
     return -1;
   }
 
@@ -64,24 +64,100 @@ async function embeddedCheck(url : string) : Promise<number>
   */
   url = url.replace(/[^\/]*$/,'');
 
+  // count the words of this page
   count += wordsCounter(body, { isHtml: true }).wordsCount;
   console.log(count);
 
   // 2. get word count for all embedded html pages
-  
+  let temp : any[];
+
+
   let iframes : RegExpMatchArray | null = body.match(/<[ ]*iframe[^>]*>/g);
   //extract data
   if(iframes !== null)
   {
-    for(const iframe of iframes) {
-      let temp = iframe.match(/src[ ]*=[ ]*["-][^'^"]*["']/);
-        if(temp !== undefined && temp !== null)
-        {
-          count += await embeddedCheck(urlResolver(url,temp[0].replace(/src[ ]*=[ ]*/,'').replace(/"([^"]*)"/,"$1")))
-        }
+    // convert to lower case for ease of processing
+    temp = iframes.map((iframe)=>{ 
+      console.log(iframe);
+      return iframe.toLowerCase();
+    });
+    // filter those out that don't have a src
+    temp = temp.filter((iframe)=>{
+      return /src[ ]*=[ ]*["'][^'^"]+["']/.test(iframe);
+    });
+    // extract the urls
+    temp = temp.map((iframe)=>{
+      console.log("value OK?");
+      // return /src[ ]*=[ ]*["'][^'"]+["']/.exec(embed)![0].replace(/src[ ]*=[ ]*["']([^'"]+)["']/,'$1');
+      console.log(/src[ ]*=[ ]*["'][^'^"]*["']/.exec(iframe)![0]);
+      console.log(/src[ ]*=[ ]*["'][^'^"]*["']/.exec(iframe)![0].replace(/["']([^"']+)["']/,'$1'));
+      return /src[ ]*=[ ]*["'][^'^"]*["']/.exec(iframe)![0].replace(/src[ ]*=[ ]*["']([^'^"]*)["']/,'$1');
+
+    });
+    // iterate through the iframe urls doing a word count on each
+    for(const iframeUrl of temp) {
+          count += await wordCount(urlResolver(url,iframeUrl));
     }  
   }
 
+  let embeds : RegExpMatchArray | null = body.match(/<[ ]*embed[^>]*>/g);
+    //extract data
+    if(embeds !== null)
+    {
+      // convert to lowercase
+      temp = embeds.map((embed)=>{ return embed.toLowerCase()});
+      // filter out those not of type "text/html" ( must have a source too)
+      temp = temp.filter((embed)=>{
+        return /type[ ]*=[ ]*["']text\/html["']/.test(embed)
+        &&
+        /src[ ]*=[ ]*["'][^'"]+["']/.test(embed);
+      });
+
+      // get the urls
+      temp = temp.map((embed)=>{
+        return /src[ ]*=[ ]*["'][^'"]+["']/.exec(embed)![0].replace(/src[ ]*=[ ]*["']([^'"]+)["']/,'$1');
+      })
+
+      for(const embedUrl of temp) {
+        count += await wordCount(urlResolver(url,embedUrl));
+      }  
+    }
+
+  let objects : RegExpMatchArray | null = body.match(/<[ ]*object[^>]*>/g);
+  if(objects !== null)
+  {
+    // convert to lowercase
+    temp = objects.map((object)=>{
+      return object.toLowerCase();
+    }
+      );
+    // filter out objects without a HTML data tag
+    temp = temp.filter((object)=>{
+        // looking for something like the following: data="./index.html"
+        return /data[ ]*=[ ]*["'][^'^"]*htm[l]["']/.test(object);
+      }
+    );
+    // get the urls for all the object tags
+    temp = temp.map((obj)=>{
+      // 1. for example: match data="./index.html", we already know it exists from before
+      // 2. for example:  get ./index.html from data="./index.html"
+      return /data[ ]*=[ ]*["'][^'^"]*htm[l]["']/.exec(obj)![0].replace(/data[ ]*=[ ]*["']([^'^"]*)["']/,'$1');
+    })
+      
+    for(const objectTagUrl of temp) {
+      count += await wordCount(urlResolver(url,objectTagUrl));
+    } 
+
+  }
+
+
+  // // extract source if correct type. Will need to filter, as not always a site.
+  // console.log(embeds);
+
+
+  // let objects : RegExpMatchArray | null = body.match(/<[ ]*object[^>]*>/g);
+  // // extract data if .htm(l) file
+  // console.log(objects);
 
 
 
@@ -98,14 +174,7 @@ async function embeddedCheck(url : string) : Promise<number>
     // });
 
 
-  // let embeds : RegExpMatchArray | null = body.match(/<[ ]*embed[^>]*>/g);
-  // // extract source if correct type. Will need to filter, as not always a site.
-  // console.log(embeds);
 
-
-  // let objects : RegExpMatchArray | null = body.match(/<[ ]*object[^>]*>/g);
-  // // extract data if .htm(l) file
-  // console.log(objects);
 
 
   return count;
