@@ -17,6 +17,7 @@ app.get('/', async (req : Request, res : Response) => {
   }
 
   let body : string;
+  let failedUrls : string[] = [];
 
   // // Add a http:// to the entered url, if it is missing.
   if((req.query.page as string).substring(0,7).toLowerCase() !== 'http://'
@@ -29,18 +30,18 @@ app.get('/', async (req : Request, res : Response) => {
   }
 
   // Try fetching the webpage from the URL
-  let count = await wordCount((req.query.page as string));
+  let count = await wordCount((req.query.page as string), failedUrls);
 
-  if(count < 0)
+  if(failedUrls.length > 0)
   {
-    res.status(404).send(`Error fetching page, or embedded page at ${req.query.page}`);
+    res.status(404).send(`Error fetching (embedded) page(s): ${arrayFormatter(failedUrls)}`);
     return;
   }
 
   res.status(200).send(count.toString());
 });
 
-async function wordCount(url : string) : Promise<number>
+async function wordCount(url : string, failedUrls : string[]) : Promise<number>
 {
   let count = 0;
   let body;
@@ -53,8 +54,8 @@ async function wordCount(url : string) : Promise<number>
   } catch (error) {
     console.log(`Error fetching page ${url}`)
     console.log(error);
-    // signal issue fetching the page (in progress)
-    return -1;
+    failedUrls.push(url);
+    return 0;
   }
 
   /* shorten url just to a directory
@@ -90,7 +91,7 @@ async function wordCount(url : string) : Promise<number>
     });
     // iterate through the iframe urls doing a word count on each
     for(const iframeUrl of temp) {
-          count += await wordCount(urlResolver(url,iframeUrl));
+          count += await wordCount(urlResolver(url,iframeUrl), failedUrls);
     }  
   }
 
@@ -113,7 +114,7 @@ async function wordCount(url : string) : Promise<number>
       })
 
       for(const embedUrl of temp) {
-        count += await wordCount(urlResolver(url,embedUrl));
+        count += await wordCount(urlResolver(url,embedUrl), failedUrls);
       }  
     }
 
@@ -139,7 +140,7 @@ async function wordCount(url : string) : Promise<number>
     })
       
     for(const objectTagUrl of temp) {
-      count += await wordCount(urlResolver(url,objectTagUrl));
+      count += await wordCount(urlResolver(url,objectTagUrl), failedUrls);
     } 
 
   }
@@ -161,6 +162,19 @@ function urlResolver(originalUrl : string, newUrl : string) : string {
   }
   // otherwise you will have to append this onto the end of the "base" url
   return `${originalUrl}${newUrl.replace(/^[.]/,'').replace(/\//,'')}`;
+}
+
+
+function arrayFormatter(arr : string[]) : string
+{
+  let temp = "";
+  for(let i=0; i < arr.length; i++)
+  {
+    temp += `${arr[i]} , `;
+  }
+
+  temp = temp.substring(0,temp.length-3);
+  return temp;
 }
 
 
