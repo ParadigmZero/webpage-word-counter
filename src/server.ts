@@ -2,7 +2,6 @@ import express from 'express';
 import { Request, Response } from 'express';
 import wordsCounter from 'word-counting'
 import cors from 'cors';
-import { SourceTextModule } from 'vm';
 
 const app = express();
 
@@ -87,12 +86,7 @@ async function wordCount(url : string) : Promise<number>
     });
     // extract the urls
     temp = temp.map((iframe)=>{
-      console.log("value OK?");
-      // return /src[ ]*=[ ]*["'][^'"]+["']/.exec(embed)![0].replace(/src[ ]*=[ ]*["']([^'"]+)["']/,'$1');
-      console.log(/src[ ]*=[ ]*["'][^'^"]*["']/.exec(iframe)![0]);
-      console.log(/src[ ]*=[ ]*["'][^'^"]*["']/.exec(iframe)![0].replace(/["']([^"']+)["']/,'$1'));
-      return /src[ ]*=[ ]*["'][^'^"]*["']/.exec(iframe)![0].replace(/src[ ]*=[ ]*["']([^'^"]*)["']/,'$1');
-
+      return /src[ ]*=[ ]*["'][^'^"]+["']/.exec(iframe)![0].replace(/src[ ]*=[ ]*["']([^'^"]+)["']/,'$1');
     });
     // iterate through the iframe urls doing a word count on each
     for(const iframeUrl of temp) {
@@ -150,33 +144,6 @@ async function wordCount(url : string) : Promise<number>
 
   }
 
-
-  // // extract source if correct type. Will need to filter, as not always a site.
-  // console.log(embeds);
-
-
-  // let objects : RegExpMatchArray | null = body.match(/<[ ]*object[^>]*>/g);
-  // // extract data if .htm(l) file
-  // console.log(objects);
-
-
-
-    // iframes?.forEach((iframe) => {
-    //   console.log(iframe);
-      
-    //   // a forEach is clunky seeing as we only need 1 value
-    //   iframe.match(/src[ ]*=[ ]*["-][^'^"]*["']/)?.forEach((t)=>{
-    //     // console.log(t.replace(/src[ ]*=[ ]*/,'').replace(/"([^"]*)"/,"$1"));
-    //     embeddedCheck(count,urlResolver(url,t.replace(/src[ ]*=[ ]*/,'').replace(/"([^"]*)"/,"$1")))
-    //   })
-
-    //   // embeddedCheck(count,urlResolver(url,"placeholder"));
-    // });
-
-
-
-
-
   return count;
 }
 
@@ -188,31 +155,15 @@ async function wordCount(url : string) : Promise<number>
  http://example.com/dir1/dir2/noChange.html
  */
 function urlResolver(originalUrl : string, newUrl : string) : string {
-
   // if its a full URL i.e. has a http:// or https:// then use this url as the full url
   if(newUrl.substring(0,7).toLowerCase() === 'http://' || newUrl.substring(0,8).toLowerCase() === 'https://') {
     return newUrl;
   }
-
   // otherwise you will have to append this onto the end of the "base" url
   return `${originalUrl}${newUrl.replace(/^[.]/,'').replace(/\//,'')}`;
-
 }
 
 
 app.listen(4000, () => {
   console.log('Application started on port 4000!');
 });
-
-
-
-
-/*
- SANDBOX
-*/
-/*
-regex for matching a short url
-e.g.
-^(.\/|\/)?[a-zA-Z0-9-_ ]*.[x]?htm[l]?$
-let bool = /^(.\/|\/)?[a-zA-Z0-9-_ ]*.[x]?htm[l]?$/.test('./mysite.html');
-*/ 
