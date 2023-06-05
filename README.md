@@ -6,13 +6,15 @@ Simply perform a HTTP GET request, passing in a query parameter named `page` wit
 
 # Details/limitations of word count
 
-This performs a "shallow word count" on HTML elements, using the [word-counting library](https://www.npmjs.com/package/word-counting/).
+This performs a word count on HTML elements, using the [word-counting library](https://www.npmjs.com/package/word-counting/).
 
 Tags, comments, script text .etc are ignored, and all rendered HTML text is counted.
 
-However, JavaScript rendered text, as well as embedded HTML is not counted in the word count.
+This can also count words in embedded HTML elements (using iframe, embed or body HTML tags)
 
-Text within `<noscript>` tags is counted in the word count, even though in the majority of situations, this will not be displayed to a user.
+JavaScript rendered text, however will not be counted, so JavaScript heavy sites, cannot get an accurate word count.
+
+Text within `<noscript>` tags is counted as well in the word count, even though in the majority of situations, this will not be displayed to a user.
 
 # Running
 
