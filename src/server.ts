@@ -1,9 +1,8 @@
 import express from 'express';
-import { Request, Response } from 'express';
+import { Request, Response, Express } from 'express';
 import wordsCounter from 'word-counting'
 import cors from 'cors';
-
-const app = express();
+const app : Express = express();
 
 app.use(cors());
 
@@ -16,7 +15,7 @@ app.get('/', async (req : Request, res : Response) => {
     return;
   }
 
-  let count = 0;
+  let count : number = 0;
   let successfulUrls : string[] = [];
   let failedUrls : string[] = [];
   let responseBody : {message:string,wordCount?:number,countedPages?:string[],uncountedPages?:string[]} = 
@@ -25,7 +24,7 @@ app.get('/', async (req : Request, res : Response) => {
   countedPages:successfulUrls,
   uncountedPages:failedUrls};
 
-  // // Add a http:// to the entered url, if it is missing.
+  // Add a http:// to the entered url, if it is missing.
   if((req.query.page as string).substring(0,7).toLowerCase() !== 'http://'
     &&
     (req.query.page as string).substring(0,8).toLowerCase() !== 'https://'
@@ -56,6 +55,14 @@ app.get('/', async (req : Request, res : Response) => {
   res.status(200).send(responseBody);
 });
 
+/**
+ * Count the words of a HTML page, as well as any embedded HTML pages on that page.
+ * @function
+ * @param url - the URL of the page to be word counted
+ * @param successfulUrls - An array of the pages successful counted, shared amongst the whole application
+ * @param failedUrls - An array of the URLs that resulted in an error when fetching (not contributing to final word count)
+ * @returns the count as a number ( must be awaited )
+ */
 async function wordCount(url : string, successfulUrls : string[], failedUrls : string[]) : Promise<number>
 {
   let count = 0;
@@ -165,11 +172,17 @@ async function wordCount(url : string, successfulUrls : string[], failedUrls : s
 }
 
 /*
- Convert a partial url, e.g. 'about.html', './about.html', './me/about.html' etc
- if needed.
- e.g.
- ./about.html -> http://www.mysite.com/about.html
- http://example.com/dir1/dir2/noChange.html
+
+ */
+/**
+ * A helper function to convert a partial url if needed:
+ * ./change.html -> http://www.mysite.com/change.html
+ * http://example.com/dir1/dir2/noChange.html
+ * @function
+ * @param originalUrl - the base site, in the following format: e.g. http://www.domain.com/ or http://www.domain.com/dir/
+ * @param newUrl - the url to be resolved, it may be relative, e.g. './site.html' or 'site.html'
+ * or complete such as http://www.domain.com/dir/site.html
+ * @returns a full URL that can be fetched, e.g. http://www.domain.com/site.html
  */
 function urlResolver(originalUrl : string, newUrl : string) : string {
   // if its a full URL i.e. has a http:// or https:// then use this url as the full url
