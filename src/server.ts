@@ -16,7 +16,7 @@ app.get('/', async (req : Request, res : Response) => {
     return;
   }
 
-  let body : string;
+  let successfulUrls : string[] = [];
   let failedUrls : string[] = [];
 
   // // Add a http:// to the entered url, if it is missing.
@@ -30,7 +30,7 @@ app.get('/', async (req : Request, res : Response) => {
   }
 
   // Try fetching the webpage from the URL
-  let count = await wordCount((req.query.page as string), failedUrls);
+  let count = await wordCount((req.query.page as string), successfulUrls, failedUrls);
 
   if(failedUrls.length > 0)
   {
@@ -38,14 +38,14 @@ app.get('/', async (req : Request, res : Response) => {
      A "404 Not Found" is used in case, because even though some of the pages
     may be found to count the words, not all are
     */
-    res.status(404).send({count: count, message: `Error fetching ${failedUrls.length} (embedded) page(s)`, uncountedPages:failedUrls});
+    res.status(404).send({message: `Error fetching ${failedUrls.length} (embedded) page(s)`, count: count, countedPages: successfulUrls,uncountedPages:failedUrls});
     return;
   }
 
   res.status(200).send(count.toString());
 });
 
-async function wordCount(url : string, failedUrls : string[]) : Promise<number>
+async function wordCount(url : string, successfulUrls : string[], failedUrls : string[]) : Promise<number>
 {
   let count = 0;
   let body;
@@ -53,6 +53,7 @@ async function wordCount(url : string, failedUrls : string[]) : Promise<number>
   try {
     console.log(`fetch ${url}`);
     const response = await fetch(url);
+    successfulUrls.push(url);
     // Convert the response into text
     body = await response.text();
   } catch (error) {
@@ -95,7 +96,7 @@ async function wordCount(url : string, failedUrls : string[]) : Promise<number>
     });
     // iterate through the iframe urls doing a word count on each
     for(const iframeUrl of temp) {
-          count += await wordCount(urlResolver(url,iframeUrl), failedUrls);
+          count += await wordCount(urlResolver(url,iframeUrl), successfulUrls, failedUrls);
     }  
   }
 
@@ -118,7 +119,7 @@ async function wordCount(url : string, failedUrls : string[]) : Promise<number>
       })
 
       for(const embedUrl of temp) {
-        count += await wordCount(urlResolver(url,embedUrl), failedUrls);
+        count += await wordCount(urlResolver(url,embedUrl), successfulUrls, failedUrls);
       }  
     }
 
@@ -144,7 +145,7 @@ async function wordCount(url : string, failedUrls : string[]) : Promise<number>
     })
       
     for(const objectTagUrl of temp) {
-      count += await wordCount(urlResolver(url,objectTagUrl), failedUrls);
+      count += await wordCount(urlResolver(url,objectTagUrl), successfulUrls, failedUrls);
     } 
 
   }
