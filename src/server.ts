@@ -47,8 +47,7 @@ app.get('/', async (req : Request, res : Response) => {
   {
     responseBody.message=`Failed to fetch ${failedUrls.length} (embedded) page(s) for word count.`;
     /*
-     A "404 Not Found" is used in case, because even though some of the pages
-    may be found to count the words, not all are
+     A "404 Not Found" is used in case, because some/all pages could not be found for the word count.
     */
     res.status(404).send(responseBody);
     return;
@@ -69,8 +68,8 @@ app.get('/', async (req : Request, res : Response) => {
  */
 async function wordCount(url : string, successfulUrls : string[], failedUrls : string[]) : Promise<number>
 {
-  let count = 0;
-  let body;
+  let count : number = 0;
+  let body : string;
   // 1.  get word count for current page
   try {
     console.log(`fetch ${url}`);
@@ -96,7 +95,7 @@ async function wordCount(url : string, successfulUrls : string[], failedUrls : s
   console.log(count);
 
   // 2. get word count for all embedded html pages
-  let temp : any[];
+  let temp : string[];
 
 
   let iframes : RegExpMatchArray | null = body.match(/<[ ]*iframe[^>]*>/g);
