@@ -92,14 +92,12 @@ export async function wordCount(url : string, successfulUrls : string[], failedU
 
   // count the words of this page
   count += wordsCounter(body, { isHtml: true }).wordsCount;
-  console.log(count);
 
   // 2. get word count for all embedded html pages
   let temp : string[] = getEmbeddedPageUrls(body);
 
   for(const embeddedUrl of temp)
   {
-    console.log(`fetched url is ${urlResolver(url,embeddedUrl)}`);
     count += await wordCount(urlResolver(url, embeddedUrl), successfulUrls, failedUrls);
   }  
   
@@ -122,7 +120,6 @@ export function getEmbeddedPageUrls(body : string) : string[] {
   {
     // convert to lower case for ease of processing
     temp = iframes.map((iframe)=>{ 
-      console.log(iframe);
       return iframe.toLowerCase();
     });
     // filter those out that don't have a src

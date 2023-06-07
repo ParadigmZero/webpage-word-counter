@@ -45,6 +45,8 @@ Take down the container
 
 # Testing
 
+## API
+
 A test site has been setup, which hopefully should remain active throughout this repositories lifecycle:
 
 Site (sample page):
@@ -53,7 +55,7 @@ Site (sample page):
 Repository:
 <https://github.com/ParadigmZero/paradigmzero.github.io>
 
-## Manual testing (browser)
+### Manual testing (browser)
 
 `localhost:4000/?page=<URL to page>`
 
@@ -62,7 +64,7 @@ e.g.
 <http://localhost:4000/?page=http://paradigmzero.github.io/webpagewordcounter/index.html>
 
 
-## Postman
+### Postman
 
 Options:
 
@@ -75,6 +77,14 @@ This requires Node.JS/npm to be installed, and then Newman to be installed ( i.e
 Run as follows:
 
 `newman run WebpageWordCounter.postman_collection.json`
+
+# Development related
+
+Unit tests (JUnit) can be run with `npm test`. Note you cannot be running the app (neither straight with Node nor Dockerized), to perform all these unit tests.
+
+
+
+
 
 
 
