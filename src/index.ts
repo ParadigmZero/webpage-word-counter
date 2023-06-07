@@ -7,12 +7,6 @@ import wordsCounter from 'word-counting'
 import swaggerJsDoc from 'swagger-jsdoc';
 const app : Express = express();
 
-
-// console.log(__filename.replaceAll(`\\`,'/'));
-
-console.log("Version of app!");
-console.log(process.env.npm_package_version);
-
 const options = {
     failOnErrors: true,
     definition: {

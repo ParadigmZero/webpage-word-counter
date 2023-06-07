@@ -6,7 +6,6 @@ services:
     volumes:
       - ./package.json:/usr/app/package.json
       - ./package-lock.json:/usr/app/package-lock.json
-      - ./tsconfig.json:/usr/app/tsconfig.json
       - ./src/index.ts:/usr/app/src/index.ts
       - ./src/server.ts:/usr/app/src/server.ts
     ports:
