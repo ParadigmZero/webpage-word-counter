@@ -95,8 +95,26 @@ export async function wordCount(url : string, successfulUrls : string[], failedU
   console.log(count);
 
   // 2. get word count for all embedded html pages
-  let temp : string[];
+  let temp : string[] = getEmbeddedPageUrls(body);
 
+  for(const embeddedUrl of temp)
+  {
+    console.log(`fetched url is ${urlResolver(url,embeddedUrl)}`);
+    count += await wordCount(urlResolver(url, embeddedUrl), successfulUrls, failedUrls);
+  }  
+  
+  return count;
+}
+
+/**
+ * A helper function to extract page URLS from embedded HTML elements, within a HTML string
+ * @function
+ * @param body a string of HTML that is to be scanned for embedded HTML
+ * @returns an array of strings, of all the (relative/absolute) urls, of embedded HTML elements
+ */
+export function getEmbeddedPageUrls(body : string) : string[] {
+  let temp : string[];
+  let embeddedPageUrls : string[] = [];
 
   let iframes : RegExpMatchArray | null = body.match(/<[ ]*iframe[^>]*>/g);
   //extract data
@@ -117,7 +135,7 @@ export async function wordCount(url : string, successfulUrls : string[], failedU
     });
     // iterate through the iframe urls doing a word count on each
     for(const iframeUrl of temp) {
-          count += await wordCount(urlResolver(url,iframeUrl), successfulUrls, failedUrls);
+      embeddedPageUrls.push(iframeUrl);
     }  
   }
 
@@ -140,7 +158,7 @@ export async function wordCount(url : string, successfulUrls : string[], failedU
       })
 
       for(const embedUrl of temp) {
-        count += await wordCount(urlResolver(url,embedUrl), successfulUrls, failedUrls);
+        embeddedPageUrls.push(embedUrl);
       }  
     }
 
@@ -166,12 +184,11 @@ export async function wordCount(url : string, successfulUrls : string[], failedU
     })
       
     for(const objectTagUrl of temp) {
-      count += await wordCount(urlResolver(url,objectTagUrl), successfulUrls, failedUrls);
-    } 
-
+      embeddedPageUrls.push(objectTagUrl);
+    }
   }
 
-  return count;
+  return embeddedPageUrls;
 }
 
 /**
