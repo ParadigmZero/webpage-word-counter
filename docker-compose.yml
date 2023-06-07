@@ -1,6 +1,6 @@
 version: "3.9"
 services:
-  test:
+  webpage_word_counter:
     image: node:lts-alpine
     working_dir: /usr/app
     volumes:
