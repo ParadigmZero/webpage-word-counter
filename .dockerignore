@@ -1,7 +1,0 @@
-local
-node_modules
-*.md
-.gitignore
-docker-compose.yml
-Dockerfile
-WebpageWordCounter.postman_collection.json

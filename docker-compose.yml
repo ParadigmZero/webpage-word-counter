@@ -1,12 +1,13 @@
-version: "3"
+version: "3.9"
 services:
-  node-express-docker:
-    build:
-      dockerfile: Dockerfile
+  test:
+    image: node:lts-alpine
+    working_dir: /usr/app
     volumes:
-      - ./:/usr/app
-    expose:
-      - "4000"
+      - ./package.json:/usr/app/package.json
+      - ./package-lock.json:/usr/app/package-lock.json
+      - ./tsconfig.json:/usr/app/tsconfig.json
+      - ./src/server.ts:/usr/app/src/server.ts
     ports:
-      - "4000:4000"
-    command: npm run prod
+     - "4000:4000"
+    command: sh -c "npm install && npm run prod"
