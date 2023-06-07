@@ -66,7 +66,7 @@ app.get('/', async (req : Request, res : Response) => {
  * @param failedUrls - An array of the URLs that resulted in an error when fetching (not contributing to final word count)
  * @returns the count as a number ( must be awaited )
  */
-async function wordCount(url : string, successfulUrls : string[], failedUrls : string[]) : Promise<number>
+export async function wordCount(url : string, successfulUrls : string[], failedUrls : string[]) : Promise<number>
 {
   let count : number = 0;
   let body : string;
@@ -184,7 +184,7 @@ async function wordCount(url : string, successfulUrls : string[], failedUrls : s
  * or complete such as http://www.domain.com/dir/site.html
  * @returns a full URL that can be fetched, e.g. http://www.domain.com/site.html
  */
-function urlResolver(originalUrl : string, newUrl : string) : string {
+export function urlResolver(originalUrl : string, newUrl : string) : string {
   // if its a full URL i.e. has a http:// or https:// then use this url as the full url
   if(newUrl.substring(0,7).toLowerCase() === 'http://' || newUrl.substring(0,8).toLowerCase() === 'https://') {
     return newUrl;
