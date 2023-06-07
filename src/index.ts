@@ -4,12 +4,51 @@
 import express from 'express';
 import { Request, Response, Express } from 'express';
 import wordsCounter from 'word-counting'
-import cors from 'cors';
+import swaggerJsDoc from 'swagger-jsdoc';
 const app : Express = express();
 
-app.use(cors());
 
-// Take in the page, we are going to count the words on, in a query parameter named 'page'
+// console.log(__filename.replaceAll(`\\`,'/'));
+
+console.log("Version of app!");
+console.log(process.env.npm_package_version);
+
+const options = {
+    failOnErrors: true,
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'Webpage word counter API',
+            version: (process.env.npm_package_version as string),
+        },
+    },
+    apis: ["src/index.ts"]
+};
+
+export const openapiSpecification = swaggerJsDoc(options);
+
+/**
+ * @openapi
+ * /:
+ *   get:
+ *     description: Get word count of a web page
+ *     summery: Webpage (HTML) word count
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         required: true
+ *         description: Page (HTML) URL, which to perform word count
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Success - word count retrieved HTML page, and embedded HTML pages
+ *       400:
+ *         description: Bad Request - need to include query parameter 'page' with a valid webpage URL
+ *       404:
+ *         description: Unsuccessful / partially successful word count, (embedded) webpage(s) not counted
+ *          
+ */
 app.get('/', async (req : Request, res : Response) => {
   // If no query parameter named page is passed in, return a 400 indicating Bad Request
   if(req.query.page === undefined)
@@ -56,6 +95,10 @@ app.get('/', async (req : Request, res : Response) => {
 
   res.status(200).send(responseBody);
 });
+
+
+// Take in the page, we are going to count the words on, in a query parameter named 'page'
+
 
 /**
  * Count the words of a HTML page, as well as any embedded HTML pages on that page.
@@ -206,4 +249,4 @@ export function urlResolver(originalUrl : string, newUrl : string) : string {
   return `${originalUrl}${newUrl.replace(/^[.]/,'').replace(/\//,'')}`;
 }
 
-module.exports = {app, wordCount, getEmbeddedPageUrls, urlResolver};
+module.exports = {app, openapiSpecification, wordCount, getEmbeddedPageUrls, urlResolver};
