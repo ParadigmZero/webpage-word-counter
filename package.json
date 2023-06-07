@@ -6,10 +6,10 @@
   "scripts": {
     "start": "nodemon ./src/server.ts",
     "prod": "npx tsc && node ./dist/server.js",
-    "test": "jest --forceExit"
+    "test": "jest"
   },
   "keywords": [],
-  "author": "",
+  "author": "Joseph Alton",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",

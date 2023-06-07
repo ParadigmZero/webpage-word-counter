@@ -1,4 +1,4 @@
-import {urlResolver, getEmbeddedPageUrls, wordCount} from "../src/server";
+import {urlResolver, getEmbeddedPageUrls, wordCount} from "../src/index";
 
 test("urls are properly resolved (with base url) in the urlResolver method", () => {
     expect(urlResolver("http://www.mydomain.com/","./dir/mypage.html")).toEqual("http://www.mydomain.com/dir/mypage.html");

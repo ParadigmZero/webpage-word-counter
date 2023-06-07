@@ -80,8 +80,7 @@ Run as follows:
 
 # Development related
 
-Unit tests (JUnit) can be run with `npm test`. Note you cannot be running the app (neither straight with Node nor Dockerized), to perform all these unit tests.
-
+Unit tests (JUnit) can be run with `npm test`.
 
 
 
