@@ -1,8 +1,8 @@
 {
   "name": "webpagewordcounter",
   "version": "1.0.0",
-  "description": "npm init\r npm run",
-  "main": "index.js",
+  "description": "Webpage (HTML) word counter",
+  "main": "server.ts",
   "scripts": {
     "start": "nodemon ./src/server.ts",
     "prod": "ts-node --transpileOnly ./src/server.ts",
