@@ -6,7 +6,7 @@ test("urls are properly resolved (with base url) in the urlResolver method", () 
     expect(urlResolver("http://www.mydomain.com/","http://www.adifferentsite.com")).toEqual("http://www.adifferentsite.com");
 });
 
-test("The getEmbeddedPageUrls function should extract the url from embedded content tags", async() => {
+test("The getEmbeddedPageUrls function should extract the url from embedded content tags", () => {
     expect(getEmbeddedPageUrls(`
     <html>
 
@@ -56,7 +56,7 @@ test("The getEmbeddedPageUrls function should extract the url from embedded cont
     "./index.html","./index.html"]);
 });
 
-test("Ignore non-HTML embedded elements", async() => {
+test("Ignore non-HTML embedded elements", () => {
     expect(getEmbeddedPageUrls(`
     <html>
 <!-- 
@@ -89,9 +89,9 @@ test("Ignore non-HTML embedded elements", async() => {
 </html>`)).toEqual([]);
 });
 
-test("The wordCount function should return the correct word count for a given page", async() => {
-    expect(await wordCount("http://paradigmzero.github.io/webpagewordcounter/index.html",[],[])).toEqual(20);
-    expect(await wordCount("http://paradigmzero.github.io/webpagewordcounter/depth1embedded.html",[],[])).toEqual(120);
-    expect(await wordCount("http://paradigmzero.github.io/webpagewordcounter/depth2embedded.html",[],[])).toEqual(140);
+test("The wordCount function should return the correct word count for a given page", () => {
+    expect(wordCount("http://paradigmzero.github.io/webpagewordcounter/index.html",[],[])).toEqual(20);
+    expect(wordCount("http://paradigmzero.github.io/webpagewordcounter/depth1embedded.html",[],[])).toEqual(120);
+    expect(wordCount("http://paradigmzero.github.io/webpagewordcounter/depth2embedded.html",[],[])).toEqual(140);
 });
 

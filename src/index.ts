@@ -6,6 +6,7 @@ import { Request, Response, Express } from 'express';
 import wordsCounter from 'word-counting'
 import swaggerJsDoc from 'swagger-jsdoc';
 const app : Express = express();
+const fetch = require('sync-fetch');
 
 const options = {
     failOnErrors: true,
@@ -43,7 +44,7 @@ export const openapiSpecification = swaggerJsDoc(options);
  *         description: Unsuccessful / partially successful word count, (embedded) webpage(s) not counted
  *          
  */
-app.get('/', async (req : Request, res : Response) => {
+app.get('/', (req : Request, res : Response) => {
   // If no query parameter named page is passed in, return a 400 indicating Bad Request
   if(req.query.page === undefined)
   {
@@ -71,7 +72,7 @@ app.get('/', async (req : Request, res : Response) => {
   }
 
   // Try fetching the webpage from the URL
-  count = await wordCount((req.query.page as string), successfulUrls, failedUrls);
+  count = wordCount((req.query.page as string), successfulUrls, failedUrls);
 
   responseBody.wordCount = count;
 
@@ -102,17 +103,17 @@ app.get('/', async (req : Request, res : Response) => {
  * @param failedUrls - An array of the URLs that resulted in an error when fetching (not contributing to final word count)
  * @returns the count as a number ( must be awaited )
  */
-export async function wordCount(url : string, successfulUrls : string[], failedUrls : string[]) : Promise<number>
+export function wordCount(url : string, successfulUrls : string[], failedUrls : string[]) : number
 {
   let count : number = 0;
   let body : string;
   // 1.  get word count for current page
   try {
     console.log(`fetch ${url}`);
-    const response = await fetch(url);
+    const response = fetch(url);
     successfulUrls.push(url);
     // Convert the response into text
-    body = await response.text();
+    body = response.text();
   } catch (error) {
     console.log(`Error fetching page ${url}`)
     console.log(error);
@@ -134,7 +135,7 @@ export async function wordCount(url : string, successfulUrls : string[], failedU
 
   for(const embeddedUrl of temp)
   {
-    count += await wordCount(urlResolver(url, embeddedUrl), successfulUrls, failedUrls);
+    count += wordCount(urlResolver(url, embeddedUrl), successfulUrls, failedUrls);
   }  
   
   return count;
