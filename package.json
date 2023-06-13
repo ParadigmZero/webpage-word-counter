@@ -20,6 +20,7 @@
     "run": "^1.4.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.3",
+    "sync-fetch": "^0.5.2",
     "word-counting": "^1.1.4"
   },
   "devDependencies": {
