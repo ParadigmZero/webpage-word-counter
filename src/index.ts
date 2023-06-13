@@ -5,10 +5,9 @@ import express from 'express';
 import { Request, Response, Express } from 'express';
 import wordsCounter from 'word-counting'
 import swaggerJsDoc from 'swagger-jsdoc';
-import * as cheerio from 'cheerio';
+import puppeteer from 'puppeteer';
 const app : Express = express();
 const fetch = require('sync-fetch');
-const puppeteer = require('puppeteer');
 
 const options = {
     failOnErrors: true,
@@ -246,44 +245,32 @@ export function urlResolver(originalUrl : string, newUrl : string) : string {
   return `${originalUrl}${newUrl.replace(/^[.]/,'').replace(/\//,'')}`;
 }
 
-export async function jsCount()
+export async function jsCount(url : string) 
 {
   try {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.goto('https://paradigmzero.github.io/webpagewordcounter/scriptText.html');
+  // Launch the browser
+  const browser = await puppeteer.launch({headless: "new"}); // new headless implementation
 
-    const body = await page.evaluate(() => {
-      return document.querySelector('body')?.innerHTML;
-    });
-    console.log(body);
+  // Create a page
+  const page = await browser.newPage();
 
-    await browser.close();
+  // Go to your site
+  await page.goto(url);
+
+  // extract all innerText from HTML elements rendered in headless browser
+  const extractedText = await page.$eval('*', (el : any) => el.innerText);
+  await browser.close();
+
+  // split the text on full stop, comma, space, and newline
+  // return extractedText.split(/[\s\n\.,\r]+/).length;
+
   } catch (error) {
     console.log(error);
   }
-}
 
-export function cheerioTest()
-{
-  const $ = cheerio.load(`<html>
-
-  <!-- Simple example how JavaScript assigned text cannot be counted as simply
-      as HTML text... REACT pages, for instance, are a prime example of this.
-  -->
-  <head>      <script>
-  document.getElementById("p1").innerText = "one Two three four Five Six Seven";
-  </script></head>
-      <body>
-      
-      <p id="p1"></p>
-      </body>
-  </html> `);
-
-  let temp = $('p').text();
-
-  console.log(temp);
+  // Error code
+  // return -1;
 }
 
 
-module.exports = {app, openapiSpecification, wordCount, getEmbeddedPageUrls, urlResolver, jsCount, cheerioTest};
+module.exports = {app, openapiSpecification, wordCount, getEmbeddedPageUrls, urlResolver, jsCount};

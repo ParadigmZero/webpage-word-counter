@@ -1,11 +1,4 @@
-import {urlResolver, getEmbeddedPageUrls, wordCount, jsCount, cheerioTest} from "../src/index";
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
-
-// Import puppeteer
-import puppeteer from 'puppeteer';
-
-
+import {urlResolver, getEmbeddedPageUrls, wordCount, jsCount} from "../src/index";
 
 // test("urls are properly resolved (with base url) in the urlResolver method", () => {
 //     expect(urlResolver("http://www.mydomain.com/","./dir/mypage.html")).toEqual("http://www.mydomain.com/dir/mypage.html");
@@ -102,73 +95,22 @@ import puppeteer from 'puppeteer';
 //     expect(wordCount("http://paradigmzero.github.io/webpagewordcounter/depth2embedded.html",[],[])).toEqual(140);
 // });
 
-// test("",async ()=>{
-//     await jsCount();
-
-//     expect(true).toEqual(true);
-// });
-
-// Cheerio cannot deal with JS rendered text, choose
-// Puppeteer, maybe playwrite, maybe JSDOM
-// test("Cheerio test",()=>{
-//     cheerioTest();
-// })
-
-test("JSDOM", ()=>{
-
-    // jsdom.defaultDocumentFeatures = { 
-    //     FetchExternalResources   : ['script'],
-    //     ProcessExternalResources : ['script'],
-    //     MutationEvents           : '2.0',
-    //     QuerySelector            : false
-    //   };
-
-    const dom = new JSDOM(`<html>
-
-    <!-- Simple example how JavaScript assigned text cannot be counted as simply
-        as HTML text... REACT pages, for instance, are a prime example of this.
-    -->
-    <head>      </head>
-        <body>
-        
-        <p id="p1">foobar</p>
-        <script>
-        document.getElementById("p1").innerText = "one Two three four Five Six Seven";
-        </script>
-        </body>
-
-    </html> `, {runScripts: "dangerously"});
-
-    console.log(typeof(dom.window.document.getElementById("p1").textContent));
-    console.log(dom.window.document.getElementById("p1").textContent);
-
-    // console.log(dom);
-    // const { document } = (new JSDOM(`...`)).window;
-
-    // const { window } = new JSDOM(`...`);
-
-    // console.log(window);
-    // console.log(dom.window.document);
-        // console.log(dom.window.document.querySelector("p").textContent);
-
-});
-
 
 // test("Puppeteer", async ()=>{
-//       // Launch the browser
-//   const browser = await puppeteer.launch({headless: true});
+// //       // Launch the browser
+// //   const browser = await puppeteer.launch({headless: true});
 
-//   // Create a page
-//   const page = await browser.newPage();
+// //   // Create a page
+// //   const page = await browser.newPage();
 
-//   // Go to your site
-//   await page.goto('https://paradigmzero.github.io/webpagewordcounter/scriptTextComplex.html');
+// //   // Go to your site
+// //   await page.goto('https://paradigmzero.github.io/webpagewordcounter/scriptTextComplex.html');
 
-//   const extractedText = await page.$eval('*', (el : any) => el.innerText);
-//   console.log(extractedText);
+// //   const extractedText = await page.$eval('*', (el : any) => el.innerText);
+// //   console.log(extractedText);
 
-//     // page.waitForSelector('p').then((e)=> console.log(e));
-
-//   await browser.close();
+// //   await browser.close();
+// await jsCount();
+// expect(true).toEqual(true);
 
 // });
