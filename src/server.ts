@@ -11,4 +11,5 @@ app.use('/docs', swaggerUI.serve, swaggerUI.setup(openapiSpecification));
 
 app.listen(port, () => {
   console.log(`Application started on port ${port}!`);
+  console.log(`Visit the API docs at <API-URL>/docs`)
 });

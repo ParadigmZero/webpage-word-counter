@@ -166,7 +166,7 @@
 			]
 		},
 		{
-			"name": "/",
+			"name": "HTML",
 			"item": [
 				{
 					"name": "Bad Request - Missing query parameter - 400",

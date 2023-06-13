@@ -27,8 +27,8 @@ export const openapiSpecification = swaggerJsDoc(options);
  * @openapi
  * /:
  *   get:
- *     description: Get word count of a web page
- *     summery: Webpage (HTML) word count
+ *     description: Get word count from HTML source. Also counts embedded HTML elements in the same way.
+ *     summary: Webpage (HTML) word count with HTML source.
  *     parameters:
  *       - in: query
  *         name: page
@@ -38,7 +38,7 @@ export const openapiSpecification = swaggerJsDoc(options);
  *           type: string
  *     responses:
  *       200:
- *         description: Success - word count retrieved HTML page, and embedded HTML pages
+ *         description: Success - word count retrieved for HTML page, and embedded HTML pages
  *       400:
  *         description: Bad Request - need to include query parameter 'page' with a valid webpage URL
  *       404:
@@ -85,6 +85,28 @@ app.get('/', (req : Request, res : Response) => {
   res.status(200).send(responseBody);
 });
 
+/**
+ * @openapi
+ * /htmljs:
+ *   get:
+ *     description: Words counted via the page rendered with a headless browser.
+ *     summary: Webpage word count via rendered content
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         required: true
+ *         description: Page (HTML) URL, which to perform word count
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Success - word count retrieved HTML page
+ *       400:
+ *         description: Bad Request - need to include query parameter 'page' with a valid webpage URL
+ *       404:
+ *         description: Unsuccessful word count, check URL
+ *          
+ */
 app.get('/htmljs', async (req : Request, res : Response) => {
     // If no query parameter named page is passed in, return a 400 indicating Bad Request
     if(req.query.page === undefined)
@@ -101,13 +123,12 @@ app.get('/htmljs', async (req : Request, res : Response) => {
     if(count < 0)
     {
       /*
-       A "404 Not Found" is used in case, because some/all pages could not be found for the word count.
+       A "404 Not Found", the web page could not be retrieved
       */
       res.status(404).send(`Failed word count at URL: ${req.query.page}, check url/page.`);
       return;
     }
 
-    // res.status(200).send(jsCount("success!"));
     res.status(200).send(`${count}`);
   
 });
