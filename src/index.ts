@@ -63,14 +63,7 @@ app.get('/', (req : Request, res : Response) => {
   uncountedPages:failedUrls};
 
   // Add a http:// to the entered url, if it is missing.
-  if((req.query.page as string).substring(0,7).toLowerCase() !== 'http://'
-    &&
-    (req.query.page as string).substring(0,8).toLowerCase() !== 'https://'
-  )
-  {
-
-    req.query.page = 'http://' + req.query.page;
-  }
+  req.query.page = addHTTPtoUrl(req.query.page as string);
 
   // Try fetching the webpage from the URL
   count = wordCount((req.query.page as string), successfulUrls, failedUrls);
@@ -92,9 +85,32 @@ app.get('/', (req : Request, res : Response) => {
   res.status(200).send(responseBody);
 });
 
+app.get('/htmljs', async (req : Request, res : Response) => {
+    // If no query parameter named page is passed in, return a 400 indicating Bad Request
+    if(req.query.page === undefined)
+    {
+      res.status(400).send('A query parameter named \'page\' must be included in the HTTP GET request, e.g. <API-URL>/htmljs?page=http://www.foo.com/bar.html');
+      return;
+    }
 
-// Take in the page, we are going to count the words on, in a query parameter named 'page'
+    // Add a http:// to the entered url, if it is missing.
+    req.query.page = addHTTPtoUrl(req.query.page as string);
 
+    let count = await jsCount(req.query.page as string)
+
+    if(count < 0)
+    {
+      /*
+       A "404 Not Found" is used in case, because some/all pages could not be found for the word count.
+      */
+      res.status(404).send(`Failed word count at URL: ${req.query.page}, check url/page.`);
+      return;
+    }
+
+    // res.status(200).send(jsCount("success!"));
+    res.status(200).send(`${count}`);
+  
+});
 
 /**
  * Count the words of a HTML page, as well as any embedded HTML pages on that page.
@@ -226,6 +242,20 @@ export function getEmbeddedPageUrls(body : string) : string[] {
   return embeddedPageUrls;
 }
 
+function addHTTPtoUrl(url : string) : string
+{
+  if(url.substring(0,7).toLowerCase() !== 'http://'
+    &&
+    url.substring(0,8).toLowerCase() !== 'https://'
+  )
+  {
+
+    return 'http://'+url;
+  }
+
+  return url;
+}
+
 /**
  * A helper function to convert a partial url if needed:
  * ./change.html -> http://www.mysite.com/change.html
@@ -245,7 +275,7 @@ export function urlResolver(originalUrl : string, newUrl : string) : string {
   return `${originalUrl}${newUrl.replace(/^[.]/,'').replace(/\//,'')}`;
 }
 
-export async function jsCount(url : string) 
+export async function jsCount(url : string) : Promise<number>
 {
   try {
   // Launch the browser
@@ -262,14 +292,14 @@ export async function jsCount(url : string)
   await browser.close();
 
   // split the text on full stop, comma, space, and newline
-  // return extractedText.split(/[\s\n\.,\r]+/).length;
+  return extractedText.split(/[\s\n\.,\r]+/).length;
 
   } catch (error) {
     console.log(error);
   }
 
   // Error code
-  // return -1;
+  return -1;
 }
 
 
