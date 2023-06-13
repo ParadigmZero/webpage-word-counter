@@ -5,6 +5,7 @@ import express from 'express';
 import { Request, Response, Express } from 'express';
 import wordsCounter from 'word-counting'
 import swaggerJsDoc from 'swagger-jsdoc';
+import puppeteer from 'puppeteer';
 const app : Express = express();
 const fetch = require('sync-fetch');
 
@@ -26,8 +27,8 @@ export const openapiSpecification = swaggerJsDoc(options);
  * @openapi
  * /:
  *   get:
- *     description: Get word count of a web page
- *     summery: Webpage (HTML) word count
+ *     description: Get word count from HTML source. Also counts embedded HTML elements in the same way.
+ *     summary: Webpage (HTML) word count with HTML source.
  *     parameters:
  *       - in: query
  *         name: page
@@ -37,7 +38,7 @@ export const openapiSpecification = swaggerJsDoc(options);
  *           type: string
  *     responses:
  *       200:
- *         description: Success - word count retrieved HTML page, and embedded HTML pages
+ *         description: Success - word count retrieved for HTML page, and embedded HTML pages
  *       400:
  *         description: Bad Request - need to include query parameter 'page' with a valid webpage URL
  *       404:
@@ -62,14 +63,7 @@ app.get('/', (req : Request, res : Response) => {
   uncountedPages:failedUrls};
 
   // Add a http:// to the entered url, if it is missing.
-  if((req.query.page as string).substring(0,7).toLowerCase() !== 'http://'
-    &&
-    (req.query.page as string).substring(0,8).toLowerCase() !== 'https://'
-  )
-  {
-
-    req.query.page = 'http://' + req.query.page;
-  }
+  req.query.page = addHTTPtoUrl(req.query.page as string);
 
   // Try fetching the webpage from the URL
   count = wordCount((req.query.page as string), successfulUrls, failedUrls);
@@ -91,9 +85,53 @@ app.get('/', (req : Request, res : Response) => {
   res.status(200).send(responseBody);
 });
 
+/**
+ * @openapi
+ * /htmljs:
+ *   get:
+ *     description: Words counted via the page rendered with a headless browser.
+ *     summary: Webpage word count via rendered content
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         required: true
+ *         description: Page (HTML) URL, which to perform word count
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Success - word count retrieved HTML page
+ *       400:
+ *         description: Bad Request - need to include query parameter 'page' with a valid webpage URL
+ *       404:
+ *         description: Unsuccessful word count, check URL
+ *          
+ */
+app.get('/htmljs', async (req : Request, res : Response) => {
+    // If no query parameter named page is passed in, return a 400 indicating Bad Request
+    if(req.query.page === undefined)
+    {
+      res.status(400).send('A query parameter named \'page\' must be included in the HTTP GET request, e.g. <API-URL>/htmljs?page=http://www.foo.com/bar.html');
+      return;
+    }
 
-// Take in the page, we are going to count the words on, in a query parameter named 'page'
+    // Add a http:// to the entered url, if it is missing.
+    req.query.page = addHTTPtoUrl(req.query.page as string);
 
+    let count = await jsCount(req.query.page as string)
+
+    if(count < 0)
+    {
+      /*
+       A "404 Not Found", the web page could not be retrieved
+      */
+      res.status(404).send(`Failed word count at URL: ${req.query.page}, check url/page.`);
+      return;
+    }
+
+    res.status(200).send(`${count}`);
+  
+});
 
 /**
  * Count the words of a HTML page, as well as any embedded HTML pages on that page.
@@ -225,6 +263,20 @@ export function getEmbeddedPageUrls(body : string) : string[] {
   return embeddedPageUrls;
 }
 
+function addHTTPtoUrl(url : string) : string
+{
+  if(url.substring(0,7).toLowerCase() !== 'http://'
+    &&
+    url.substring(0,8).toLowerCase() !== 'https://'
+  )
+  {
+
+    return 'http://'+url;
+  }
+
+  return url;
+}
+
 /**
  * A helper function to convert a partial url if needed:
  * ./change.html -> http://www.mysite.com/change.html
@@ -244,4 +296,32 @@ export function urlResolver(originalUrl : string, newUrl : string) : string {
   return `${originalUrl}${newUrl.replace(/^[.]/,'').replace(/\//,'')}`;
 }
 
-module.exports = {app, openapiSpecification, wordCount, getEmbeddedPageUrls, urlResolver};
+export async function jsCount(url : string) : Promise<number>
+{
+  try {
+  // Launch the browser
+  const browser = await puppeteer.launch({headless: "new"}); // new headless implementation
+
+  // Create a page
+  const page = await browser.newPage();
+
+  // Go to your site
+  await page.goto(url);
+
+  // extract all innerText from HTML elements rendered in headless browser
+  const extractedText = await page.$eval('*', (el : any) => el.innerText);
+  await browser.close();
+
+  // split the text on full stop, comma, space, and newline
+  return extractedText.split(/[\s\n\.,\r]+/).length;
+
+  } catch (error) {
+    console.log(error);
+  }
+
+  // Error code
+  return -1;
+}
+
+
+module.exports = {app, openapiSpecification, wordCount, getEmbeddedPageUrls, urlResolver, jsCount};
