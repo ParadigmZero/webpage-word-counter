@@ -7,7 +7,7 @@
 	},
 	"item": [
 		{
-			"name": "HTMLJS",
+			"name": "dynamicwordcount",
 			"item": [
 				{
 					"name": "Bad Request - Missing query parameter - 400",
@@ -28,14 +28,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:4000/htmljs",
-							"protocol": "http",
+							"raw": "{{base_url}}/dynamicwordcount",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "4000",
 							"path": [
-								"htmljs"
+								"dynamicwordcount"
 							]
 						}
 					},
@@ -64,14 +62,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:4000/htmljs?page=https://paradigmzero.github.io/webpagewordcounter/scriptTextComplex.html",
-							"protocol": "http",
+							"raw": "{{base_url}}/dynamicwordcount?page=https://paradigmzero.github.io/webpagewordcounter/scriptTextComplex.html",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "4000",
 							"path": [
-								"htmljs"
+								"dynamicwordcount"
 							],
 							"query": [
 								{
@@ -106,14 +102,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:4000/htmljs?page=https://paradigmzero.github.io/webpagewordcounter/scriptText.html",
-							"protocol": "http",
+							"raw": "{{base_url}}/dynamicwordcount?page=https://paradigmzero.github.io/webpagewordcounter/scriptText.html",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "4000",
 							"path": [
-								"htmljs"
+								"dynamicwordcount"
 							],
 							"query": [
 								{
@@ -144,14 +138,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:4000/htmljs?page=http://www.incompleteurl",
-							"protocol": "http",
+							"raw": "{{base_url}}/dynamicwordcount?page=http://www.incompleteurl",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "4000",
 							"path": [
-								"htmljs"
+								"dynamicwordcount"
 							],
 							"query": [
 								{
@@ -166,7 +158,7 @@
 			]
 		},
 		{
-			"name": "HTML",
+			"name": "wordcount",
 			"item": [
 				{
 					"name": "Bad Request - Missing query parameter - 400",
@@ -187,14 +179,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:4000/",
-							"protocol": "http",
+							"raw": "{{base_url}}/wordcount",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "4000",
 							"path": [
-								""
+								"wordcount"
 							]
 						}
 					},
@@ -231,14 +221,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:4000/?page=http://www.incompleteurl",
-							"protocol": "http",
+							"raw": "{{base_url}}/wordcount?page=http://www.incompleteurl",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "4000",
 							"path": [
-								""
+								"wordcount"
 							],
 							"query": [
 								{
@@ -269,14 +257,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:4000/?page=http://www.google.com",
-							"protocol": "http",
+							"raw": "{{base_url}}/wordcount?page=http://www.google.com",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "4000",
 							"path": [
-								""
+								"wordcount"
 							],
 							"query": [
 								{
@@ -307,14 +293,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:4000/?page=lukesmith.xyz",
-							"protocol": "http",
+							"raw": "{{base_url}}/wordcount?page=lukesmith.xyz",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "4000",
 							"path": [
-								""
+								"wordcount"
 							],
 							"query": [
 								{
@@ -349,14 +333,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:4000/?page=http://paradigmzero.github.io/webpagewordcounter/index.html",
-							"protocol": "http",
+							"raw": "{{base_url}}/wordcount?page=http://paradigmzero.github.io/webpagewordcounter/index.html",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "4000",
 							"path": [
-								""
+								"wordcount"
 							],
 							"query": [
 								{
@@ -395,14 +377,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:4000/?page=paradigmzero.github.io/webpagewordcounter/scriptText.html",
-							"protocol": "http",
+							"raw": "{{base_url}}/wordcount?page=paradigmzero.github.io/webpagewordcounter/scriptText.html",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "4000",
 							"path": [
-								""
+								"wordcount"
 							],
 							"query": [
 								{
@@ -437,14 +417,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:4000/?page=paradigmzero.github.io/webpagewordcounter/depth1embedded.html",
-							"protocol": "http",
+							"raw": "{{base_url}}/wordcount?page=paradigmzero.github.io/webpagewordcounter/depth1embedded.html",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "4000",
 							"path": [
-								""
+								"wordcount"
 							],
 							"query": [
 								{
@@ -479,14 +457,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:4000/?page=paradigmzero.github.io/webpagewordcounter/depth2embedded.html",
-							"protocol": "http",
+							"raw": "{{base_url}}/wordcount?page=paradigmzero.github.io/webpagewordcounter/depth2embedded.html",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "4000",
 							"path": [
-								""
+								"wordcount"
 							],
 							"query": [
 								{
@@ -525,14 +501,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:4000/?page=paradigmzero.github.io/webpagewordcounter/unloadableEmbeddedElement.html",
-							"protocol": "http",
+							"raw": "{{base_url}}/wordcount?page=paradigmzero.github.io/webpagewordcounter/unloadableEmbeddedElement.html",
 							"host": [
-								"localhost"
+								"{{base_url}}"
 							],
-							"port": "4000",
 							"path": [
-								""
+								"wordcount"
 							],
 							"query": [
 								{
@@ -545,6 +519,33 @@
 					"response": []
 				}
 			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:4000",
+			"type": "string"
 		}
 	]
 }

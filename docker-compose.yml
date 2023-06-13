@@ -1,8 +1,10 @@
 version: "3.9"
 services:
   webpage_word_counter:
-    image: node:lts-alpine
+    image: node:slim
     working_dir: /usr/app
+    environment:
+      - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
     volumes:
       - ./package.json:/usr/app/package.json
       - ./package-lock.json:/usr/app/package-lock.json
@@ -10,4 +12,4 @@ services:
       - ./src/server.ts:/usr/app/src/server.ts
     ports:
      - "4000:4000"
-    command: sh -c "npm install && npm run prod"
+    command: sh -c "apt-get install chromium-browser && npm install && npm run prod"

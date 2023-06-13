@@ -25,7 +25,7 @@ export const openapiSpecification = swaggerJsDoc(options);
 
 /**
  * @openapi
- * /:
+ * /wordcount:
  *   get:
  *     description: Get word count from HTML source. Also counts embedded HTML elements in the same way.
  *     summary: Webpage (HTML) word count with HTML source.
@@ -45,7 +45,7 @@ export const openapiSpecification = swaggerJsDoc(options);
  *         description: Unsuccessful / partially successful word count, (embedded) webpage(s) not counted
  *          
  */
-app.get('/', (req : Request, res : Response) => {
+app.get('/wordcount', (req : Request, res : Response) => {
   // If no query parameter named page is passed in, return a 400 indicating Bad Request
   if(req.query.page === undefined)
   {
@@ -87,7 +87,7 @@ app.get('/', (req : Request, res : Response) => {
 
 /**
  * @openapi
- * /htmljs:
+ * /dynamicwordcount:
  *   get:
  *     description: Words counted via the page rendered with a headless browser.
  *     summary: Webpage word count via rendered content
@@ -107,7 +107,7 @@ app.get('/', (req : Request, res : Response) => {
  *         description: Unsuccessful word count, check URL
  *          
  */
-app.get('/htmljs', async (req : Request, res : Response) => {
+app.get('/dynamicwordcount', async (req : Request, res : Response) => {
     // If no query parameter named page is passed in, return a 400 indicating Bad Request
     if(req.query.page === undefined)
     {
