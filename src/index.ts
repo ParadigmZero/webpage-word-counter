@@ -315,7 +315,7 @@ export function getEmbeddedPageUrls(body : string) : string[] {
  * @param url - string of url
  * @returns the url with http:// appended if necessary
  */
-function addHTTPtoUrl(url : string) : string
+export function addHTTPtoUrl(url : string) : string
 {
   if(url.substring(0,7).toLowerCase() !== 'http://'
     &&
@@ -349,4 +349,4 @@ export function urlResolver(originalUrl : string, newUrl : string) : string {
 }
 
 
-module.exports = {app, openapiSpecification, wordCount, getEmbeddedPageUrls, urlResolver, dynamicWordCount};
+module.exports = {app, wordCount, dynamicWordCount, addHTTPtoUrl, getEmbeddedPageUrls, urlResolver};

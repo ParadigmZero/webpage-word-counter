@@ -92,11 +92,27 @@ Run as follows:
 
 `newman run WebpageWordCounter.postman_collection.json`
 
-You can also test the endpoints individually as so:
+Further options:
 
-`newman run WebpageWordCounter.postman_collection.json --folder wordcount`
+- change `base_url` (the default is <http://localhost:4000>). Example:
 
-`newman run WebpageWordCounter.postman_collection.json --folder dynamicwordcount`
+`--env-var "base_url=https://webpagewordcount.onrender.com"`
+
+- test a single endpoint. Endpoints are organized in folders in the collection. Folder names correspond to endpoint names, and so you can specify which endpoint to test as follows:
+
+`--folder dynamicwordcount`
+
+Sample run:
+
+`newman run WebpageWordCounter.postman_collection.json --env-var "base_url=https://webpagewordcount.onrender.com" --folder wordcount`
+
+# Deployment ( as of date of this README publication )
+
+Dockerized application has a free-tier deployment with `Render.com` at the following URL.
+
+<https://webpagewordcount.onrender.com>
+
+The Master branch is automatically deployed there.
 
 # Development related
 
