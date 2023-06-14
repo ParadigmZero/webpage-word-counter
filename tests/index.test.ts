@@ -1,4 +1,4 @@
-import {urlResolver, getEmbeddedPageUrls, wordCount, jsCount} from "../src/index";
+import {urlResolver, getEmbeddedPageUrls, wordCount, dynamicWordCount} from "../src/index";
 
 test("urls are properly resolved (with base url) in the urlResolver method", () => {
     expect(urlResolver("http://www.mydomain.com/","./dir/mypage.html")).toEqual("http://www.mydomain.com/dir/mypage.html");
@@ -95,17 +95,17 @@ test("The wordCount function should return the correct word count for a given pa
     expect(wordCount("http://paradigmzero.github.io/webpagewordcounter/depth2embedded.html",[],[])).toEqual(140);
 });
 
-test(`jsCount method which will accurately count words on a page that changes the content with JavaScript.`, async ()=>{
+test(`dynamicWordCount method which will accurately count words on a page that changes the content with JavaScript.`, async ()=>{
     // pages where JavaScript significantly changes the text
-    expect(await jsCount('https://paradigmzero.github.io/webpagewordcounter/scriptText.html')).toEqual(7);
-    expect(await jsCount('https://paradigmzero.github.io/webpagewordcounter/scriptTextComplex.html')).toEqual(20);
+    expect(await dynamicWordCount('https://paradigmzero.github.io/webpagewordcounter/scriptText.html')).toEqual(7);
+    expect(await dynamicWordCount('https://paradigmzero.github.io/webpagewordcounter/scriptTextComplex.html')).toEqual(20);
 });
 
-test(`jsCount method with accurately count the text on a standard HTML page.`, async ()=>{
-    expect(await jsCount("http://paradigmzero.github.io/webpagewordcounter/index.html")).toEqual(20);
+test(`dynamicWordCount method with accurately count the text on a standard HTML page.`, async ()=>{
+    expect(await dynamicWordCount("http://paradigmzero.github.io/webpagewordcounter/index.html")).toEqual(20);
 });
 
-test(`jsCount method does not effectively count words with embedded HTML.`, async ()=>{
-    expect(await jsCount("http://paradigmzero.github.io/webpagewordcounter/depth1embedded.html")).not.toEqual(120);
-    expect(await jsCount("http://paradigmzero.github.io/webpagewordcounter/depth2embedded.html")).not.toEqual(140);
+test(`dynamicWordCount method does not effectively count words with embedded HTML.`, async ()=>{
+    expect(await dynamicWordCount("http://paradigmzero.github.io/webpagewordcounter/depth1embedded.html")).not.toEqual(120);
+    expect(await dynamicWordCount("http://paradigmzero.github.io/webpagewordcounter/depth2embedded.html")).not.toEqual(140);
 });

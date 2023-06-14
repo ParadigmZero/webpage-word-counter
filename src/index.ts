@@ -85,6 +85,20 @@ app.get('/wordcount', (req : Request, res : Response) => {
   res.status(200).send(responseBody);
 });
 
+app.get('/test', async (req : Request, res : Response) => {
+  // If no query parameter named page is passed in, return a 400 indicating Bad Request
+  if(req.query.page === undefined)
+  {
+    res.status(400).send('A query parameter named \'page\' must be included in the HTTP GET request, e.g. <API-URL>/htmljs?page=http://www.foo.com/bar.html');
+    return;
+  }
+  
+  // Add a http:// to the entered url, if it is missing.
+  req.query.page = addHTTPtoUrl(req.query.page as string);
+
+  scrapeLogic(res, req.query.page);
+});
+
 /**
  * @openapi
  * /dynamicwordcount:
@@ -118,7 +132,7 @@ app.get('/dynamicwordcount', async (req : Request, res : Response) => {
     // Add a http:// to the entered url, if it is missing.
     req.query.page = addHTTPtoUrl(req.query.page as string);
 
-    let count = await jsCount(req.query.page as string)
+    let count = await dynamicWordCount(req.query.page as string)
 
     if(count < 0)
     {
@@ -135,11 +149,12 @@ app.get('/dynamicwordcount', async (req : Request, res : Response) => {
 
 /**
  * Count the words of a HTML page, as well as any embedded HTML pages on that page.
+ * This method is not for content dynamically rendered through JavaScript, for that @see dynamicWordCount
  * @function
  * @param url - the URL of the page to be word counted
  * @param successfulUrls - An array of the pages successful counted, shared amongst the whole application
  * @param failedUrls - An array of the URLs that resulted in an error when fetching (not contributing to final word count)
- * @returns the count as a number ( must be awaited )
+ * @returns the count as a number
  */
 export function wordCount(url : string, successfulUrls : string[], failedUrls : string[]) : number
 {
@@ -296,11 +311,21 @@ export function urlResolver(originalUrl : string, newUrl : string) : string {
   return `${originalUrl}${newUrl.replace(/^[.]/,'').replace(/\//,'')}`;
 }
 
-export async function jsCount(url : string) : Promise<number>
+/**
+ * Count the words of a HTML page as it would be rendered dynamically from a users browser
+ * For a simple word count that does a simple parse of the HTML source, @see wordCount
+ * @function
+ * @param url - the URL of the page to be word counted
+ * @returns the count as a number ( must be awaited )
+ */
+export async function dynamicWordCount(url : string) : Promise<number>
 {
   try {
   // Launch the browser
-  const browser = await puppeteer.launch({headless: "new"}); // new headless implementation
+  const browser = await puppeteer.launch({
+    // executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
+    // args: ['--no-sandbox', '--disable-setuid-sandbox','--single-process','--no-zygote'],
+  headless: "new"}); // new headless implementation
 
   // Create a page
   const page = await browser.newPage();
@@ -324,4 +349,37 @@ export async function jsCount(url : string) : Promise<number>
 }
 
 
-module.exports = {app, openapiSpecification, wordCount, getEmbeddedPageUrls, urlResolver, jsCount};
+
+const scrapeLogic = async (res : any, url : string) => {
+  // headless new gives the error: "Something went wrong while running Puppeteer: Error: Requesting main frame too early!" in Docker"
+  // headful ( default ) - works
+  // headless true?
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: [
+      "--disable-setuid-sandbox",
+      "--no-sandbox",
+      "--single-process",
+      "--no-zygote",
+    ],
+    executablePath:
+      process.env.NODE_ENV === "production"
+        ? process.env.PUPPETEER_EXECUTABLE_PATH
+        : puppeteer.executablePath(),
+  });
+  try {
+    const page = await browser.newPage();
+
+    await page.goto(url);
+    const logStatement = await page.$eval('*', (el : any) => el.innerText);
+    res.send(logStatement);
+  } catch (e) {
+    console.error(e);
+    res.send(`Something went wrong while running Puppeteer: ${e}`);
+  } finally {
+    await browser.close();
+  }
+};
+
+
+module.exports = {app, openapiSpecification, wordCount, getEmbeddedPageUrls, urlResolver, dynamicWordCount};
