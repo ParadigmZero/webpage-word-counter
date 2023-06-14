@@ -7,338 +7,545 @@
 	},
 	"item": [
 		{
-			"name": "Bad Request - Missing query parameter - 400",
-			"event": [
+			"name": "dynamicwordcount",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 400\", () => {\r",
-							"  pm.expect(pm.response.code).to.eql(400);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:4000/",
-					"protocol": "http",
-					"host": [
-						"localhost"
+					"name": "Bad Request - Missing query parameter - 400",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
 					],
-					"port": "4000",
-					"path": [
-						""
-					]
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/dynamicwordcount",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dynamicwordcount"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Vaid site count 20 - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Word count is 20\", () => {\r",
+									"  pm.expect(pm.response.json()).to.eql(20);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/dynamicwordcount?page=https://paradigmzero.github.io/webpagewordcounter/scriptTextComplex.html",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dynamicwordcount"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "https://paradigmzero.github.io/webpagewordcounter/scriptTextComplex.html"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Vaid site count 7- 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Word count is 7\", () => {\r",
+									"  pm.expect(pm.response.json()).to.eql(7);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/dynamicwordcount?page=https://paradigmzero.github.io/webpagewordcounter/scriptText.html",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dynamicwordcount"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "https://paradigmzero.github.io/webpagewordcounter/scriptText.html"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid site - 404",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/dynamicwordcount?page=http://www.incompleteurl",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dynamicwordcount"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "http://www.incompleteurl"
+								}
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Invalid site - 404",
-			"event": [
+			"name": "wordcount",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 404\", () => {\r",
-							"  pm.expect(pm.response.code).to.eql(404);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Word count is 0\", () => {\r",
-							"  pm.expect(pm.response.json().wordCount).to.eql(0);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"There are no counted pages:\", () => {\r",
-							"  pm.expect(pm.response.json().countedPages.length).to.eql(0);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"There is one uncounted page\", () => {\r",
-							"  pm.expect(pm.response.json().uncountedPages.length).to.eql(1);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:4000/?page=http://www.incompleteurl",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						""
-					],
-					"query": [
+					"name": "Bad Request - Missing query parameter - 400",
+					"event": [
 						{
-							"key": "page",
-							"value": "http://www.incompleteurl"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
 						}
-					]
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/wordcount",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"wordcount"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid site - 404",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Word count is 0\", () => {\r",
+									"  pm.expect(pm.response.json().wordCount).to.eql(0);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"There are no counted pages:\", () => {\r",
+									"  pm.expect(pm.response.json().countedPages.length).to.eql(0);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"There is one uncounted page\", () => {\r",
+									"  pm.expect(pm.response.json().uncountedPages.length).to.eql(1);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/wordcount?page=http://www.incompleteurl",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"wordcount"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "http://www.incompleteurl"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Vaid site - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/wordcount?page=http://www.google.com",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"wordcount"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "http://www.google.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Vaid site  - without http - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/wordcount?page=lukesmith.xyz",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"wordcount"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "lukesmith.xyz"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Valid site - sample site - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"There are 20 visible words on this page\",()=> {\r",
+									"    pm.expect(pm.response.json().wordCount).to.eql(20);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/wordcount?page=http://paradigmzero.github.io/webpagewordcounter/index.html",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"wordcount"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "http://paradigmzero.github.io/webpagewordcounter/index.html"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Valid site - uncountable JS text - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Wordcount will be 0, since JavaScript rendered text, will not be counted\",()=> {\r",
+									"    pm.expect(pm.response.json().wordCount).to.eql(0);\r",
+									"});\r",
+									"\r",
+									"pm.test(`One page will be recorded as \"counted\"`, () => {\r",
+									"  pm.expect(pm.response.json().countedPages.length).to.eql(1);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/wordcount?page=paradigmzero.github.io/webpagewordcounter/scriptText.html",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"wordcount"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "paradigmzero.github.io/webpagewordcounter/scriptText.html"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Valid site - embedded HTML - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code of 200 signalling all pages were word counted\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Wordcount of 120. There are 6 embedded elements, each with 20 words.\",()=> {\r",
+									"    pm.expect(pm.response.json().wordCount).to.eql(120);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/wordcount?page=paradigmzero.github.io/webpagewordcounter/depth1embedded.html",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"wordcount"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "paradigmzero.github.io/webpagewordcounter/depth1embedded.html"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Valid site - depth 2 embedded HTML - 200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code of 200 signalling all pages were word counted\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Wordcount of 140. The first embedded element, containes 6 elements in turn (20 words each) totalling 120 words. The second embedded element has 20 words.\",()=> {\r",
+									"    pm.expect(pm.response.json().wordCount).to.eql(140);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/wordcount?page=paradigmzero.github.io/webpagewordcounter/depth2embedded.html",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"wordcount"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "paradigmzero.github.io/webpagewordcounter/depth2embedded.html"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Valid site - uncountable embedded HTML - 404",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"A status of 404 indicates that some page(s) were not counted\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Valid (embedded) HTML will be counted\",()=> {\r",
+									"    pm.expect(pm.response.json().wordCount).to.eql(120);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"One of the embedded HTML elements will fail to load\", ()=>{\r",
+									"    pm.expect(pm.response.json().uncountedPages.length).to.eql(1);\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/wordcount?page=paradigmzero.github.io/webpagewordcounter/unloadableEmbeddedElement.html",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"wordcount"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "paradigmzero.github.io/webpagewordcounter/unloadableEmbeddedElement.html"
+								}
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		},
 		{
-			"name": "Vaid site - 200",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", () => {\r",
-							"  pm.expect(pm.response.code).to.eql(200);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:4000/?page=http://www.google.com",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						""
-					],
-					"query": [
-						{
-							"key": "page",
-							"value": "http://www.google.com"
-						}
-					]
-				}
-			},
-			"response": []
-		},
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
 		{
-			"name": "Vaid site  - without http - 200",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", () => {\r",
-							"  pm.expect(pm.response.code).to.eql(200);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:4000/?page=lukesmith.xyz",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						""
-					],
-					"query": [
-						{
-							"key": "page",
-							"value": "lukesmith.xyz"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Valid site - sample site - 200",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", () => {\r",
-							"  pm.expect(pm.response.code).to.eql(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"There are 20 visible words on this page\",()=> {\r",
-							"    pm.expect(pm.response.json().wordCount).to.eql(20);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:4000/?page=http://paradigmzero.github.io/webpagewordcounter/index.html",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						""
-					],
-					"query": [
-						{
-							"key": "page",
-							"value": "http://paradigmzero.github.io/webpagewordcounter/index.html"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Valid site - uncountable JS text - 200",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", () => {\r",
-							"  pm.expect(pm.response.code).to.eql(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Wordcount will be 0, since JavaScript rendered text, will not be counted\",()=> {\r",
-							"    pm.expect(pm.response.json().wordCount).to.eql(0);\r",
-							"});\r",
-							"\r",
-							"pm.test(`One page will be recorded as \"counted\"`, () => {\r",
-							"  pm.expect(pm.response.json().countedPages.length).to.eql(1);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:4000/?page=paradigmzero.github.io/webpagewordcounter/scriptText.html",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						""
-					],
-					"query": [
-						{
-							"key": "page",
-							"value": "paradigmzero.github.io/webpagewordcounter/scriptText.html"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Valid site - embedded HTML - 200",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"A status of 404 indicates that some page(s) were not counted\", () => {\r",
-							"  pm.expect(pm.response.code).to.eql(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Valid (embedded) HTML will be counted\",()=> {\r",
-							"    pm.expect(pm.response.json().wordCount).to.eql(120);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:4000/?page=paradigmzero.github.io/webpagewordcounter/depth1embedded.html",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						""
-					],
-					"query": [
-						{
-							"key": "page",
-							"value": "paradigmzero.github.io/webpagewordcounter/depth1embedded.html"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Valid site - uncountable embedded HTML - 404",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"A status of 404 indicates that some page(s) were not counted\", () => {\r",
-							"  pm.expect(pm.response.code).to.eql(404);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Valid (embedded) HTML will be counted\",()=> {\r",
-							"    pm.expect(pm.response.json().wordCount).to.eql(120);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"One of the embedded HTML elements will fail to load\", ()=>{\r",
-							"    pm.expect(pm.response.json().uncountedPages.length).to.eql(1);\r",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:4000/?page=paradigmzero.github.io/webpagewordcounter/unloadableEmbeddedElement.html",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						""
-					],
-					"query": [
-						{
-							"key": "page",
-							"value": "paradigmzero.github.io/webpagewordcounter/unloadableEmbeddedElement.html"
-						}
-					]
-				}
-			},
-			"response": []
+			"key": "base_url",
+			"value": "http://localhost:4000",
+			"type": "string"
 		}
 	]
 }

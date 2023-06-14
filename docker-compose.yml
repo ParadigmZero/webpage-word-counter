@@ -1,12 +1,7 @@
-version: "3"
+version: '3.9'
+
 services:
-  node-express-docker:
-    build:
-      dockerfile: Dockerfile
-    volumes:
-      - ./:/usr/app
-    expose:
-      - "4000"
+  webpagewordcount:
+    build: .
     ports:
-      - "4000:4000"
-    command: npm run prod
+     - "4000:4000"
