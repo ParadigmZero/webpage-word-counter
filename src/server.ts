@@ -6,10 +6,10 @@ import swaggerUI from 'swagger-ui-express';
 
 app.use(cors());
 
-// app.use('/', swaggerUI.serve, swaggerUI.setup(openapiSpecification));
+app.use('/', swaggerUI.serve, swaggerUI.setup(openapiSpecification));
 
 
 app.listen(port, () => {
   console.log(`Application started on port ${port}!`);
-  console.log(`Visit the API docs at <API-URL>/docs`)
+  console.log(`Visit the API docs at the base API url`)
 });

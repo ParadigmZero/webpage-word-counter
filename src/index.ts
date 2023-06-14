@@ -85,20 +85,6 @@ app.get('/wordcount', (req : Request, res : Response) => {
   res.status(200).send(responseBody);
 });
 
-app.get('/test', async (req : Request, res : Response) => {
-  // If no query parameter named page is passed in, return a 400 indicating Bad Request
-  if(req.query.page === undefined)
-  {
-    res.status(400).send('A query parameter named \'page\' must be included in the HTTP GET request, e.g. <API-URL>/htmljs?page=http://www.foo.com/bar.html');
-    return;
-  }
-  
-  // Add a http:// to the entered url, if it is missing.
-  req.query.page = addHTTPtoUrl(req.query.page as string);
-
-  scrapeLogic(res, req.query.page);
-});
-
 /**
  * @openapi
  * /dynamicwordcount:
@@ -195,6 +181,51 @@ export function wordCount(url : string, successfulUrls : string[], failedUrls : 
 }
 
 /**
+ * Count the words of a HTML page as it would be rendered dynamically from a users browser
+ * For a simple word count that does a simple parse of the HTML source, @see wordCount
+ * @function
+ * @param url - the URL of the page to be word counted
+ * @returns the count as a number ( must be awaited )
+ */
+export async function dynamicWordCount(url : string) : Promise<number>
+{
+  /*
+    The following settings in launch assist in Dockerization.
+    headless is set as true, 
+    headless : "new", gives the error:
+    "Something went wrong while running Puppeteer: Error: Requesting main frame too early!"
+  */
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--disable-setuid-sandbox",
+        "--no-sandbox",
+        "--single-process",
+        "--no-zygote",
+      ],
+      executablePath:
+        process.env.NODE_ENV === "production"
+          ? process.env.PUPPETEER_EXECUTABLE_PATH
+          : puppeteer.executablePath(),
+    });
+    try {
+      const page = await browser.newPage();
+      await page.goto(url);
+      const extractedText = await page.$eval('*', (el : any) => el.innerText);
+      await browser.close();
+      // split the text on full stop, comma, space, and newline
+      return extractedText.split(/[\s\n\.,\r]+/).length; 
+    } catch (e) {
+      console.error(e);
+    } finally {
+      await browser.close();
+    }
+
+  // Error code
+  return -1;
+}
+
+/**
  * A helper function to extract page URLS from embedded HTML elements, within a HTML string
  * @function
  * @param body a string of HTML that is to be scanned for embedded HTML
@@ -278,6 +309,12 @@ export function getEmbeddedPageUrls(body : string) : string[] {
   return embeddedPageUrls;
 }
 
+/**
+ * A helper function to append a http:// to a url if necessary
+ * @function
+ * @param url - string of url
+ * @returns the url with http:// appended if necessary
+ */
 function addHTTPtoUrl(url : string) : string
 {
   if(url.substring(0,7).toLowerCase() !== 'http://'
@@ -310,76 +347,6 @@ export function urlResolver(originalUrl : string, newUrl : string) : string {
   // otherwise you will have to append this onto the end of the "base" url
   return `${originalUrl}${newUrl.replace(/^[.]/,'').replace(/\//,'')}`;
 }
-
-/**
- * Count the words of a HTML page as it would be rendered dynamically from a users browser
- * For a simple word count that does a simple parse of the HTML source, @see wordCount
- * @function
- * @param url - the URL of the page to be word counted
- * @returns the count as a number ( must be awaited )
- */
-export async function dynamicWordCount(url : string) : Promise<number>
-{
-  try {
-  // Launch the browser
-  const browser = await puppeteer.launch({
-    // executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
-    // args: ['--no-sandbox', '--disable-setuid-sandbox','--single-process','--no-zygote'],
-  headless: "new"}); // new headless implementation
-
-  // Create a page
-  const page = await browser.newPage();
-
-  // Go to your site
-  await page.goto(url);
-
-  // extract all innerText from HTML elements rendered in headless browser
-  const extractedText = await page.$eval('*', (el : any) => el.innerText);
-  await browser.close();
-
-  // split the text on full stop, comma, space, and newline
-  return extractedText.split(/[\s\n\.,\r]+/).length;
-
-  } catch (error) {
-    console.log(error);
-  }
-
-  // Error code
-  return -1;
-}
-
-
-
-const scrapeLogic = async (res : any, url : string) => {
-  // headless new gives the error: "Something went wrong while running Puppeteer: Error: Requesting main frame too early!" in Docker"
-  // headful ( default ) - works
-  // headless true?
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: [
-      "--disable-setuid-sandbox",
-      "--no-sandbox",
-      "--single-process",
-      "--no-zygote",
-    ],
-    executablePath:
-      process.env.NODE_ENV === "production"
-        ? process.env.PUPPETEER_EXECUTABLE_PATH
-        : puppeteer.executablePath(),
-  });
-  try {
-    const page = await browser.newPage();
-
-    await page.goto(url);
-    const logStatement = await page.$eval('*', (el : any) => el.innerText);
-    res.send(logStatement);
-  } catch (e) {
-    console.error(e);
-    res.send(`Something went wrong while running Puppeteer: ${e}`);
-  } finally {
-    await browser.close();
-  }
-};
 
 
 module.exports = {app, openapiSpecification, wordCount, getEmbeddedPageUrls, urlResolver, dynamicWordCount};

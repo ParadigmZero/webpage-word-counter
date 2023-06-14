@@ -6,9 +6,10 @@ There are two endpoints that can be used to count the words of a webpage, `wordc
 
 Simply perform a HTTP GET request on either endpoint, passing in a query parameter named `page` with the url to the page. See [testing](#testing).
 
-# Details/limitations of word count
+# Details/limitations API
 
 ## /wordcount
+
 This performs a word count on HTML elements, using the [word-counting library](https://www.npmjs.com/package/word-counting/).
 
 Tags, comments, script text .etc are ignored, and all rendered HTML text is counted.
@@ -19,7 +20,7 @@ JavaScript rendered text, however will not be counted, so JavaScript heavy sites
 
 Text within `<noscript>` tags is counted as well in the word count, even though in the majority of situations, this will not be displayed to a user.
 
-## dynamicwordcount
+## /dynamicwordcount
 
 This will count words for a HTML page that heavily modifies the DOM with scripts (for instance). It can count standard HTML pages and those HTML pages with JavaScript rendered text.
 
