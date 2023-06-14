@@ -118,7 +118,7 @@ app.get('/dynamicwordcount', async (req : Request, res : Response) => {
     // Add a http:// to the entered url, if it is missing.
     req.query.page = addHTTPtoUrl(req.query.page as string);
 
-    let count = await jsCount(req.query.page as string)
+    let count = await dynamicWordCount(req.query.page as string)
 
     if(count < 0)
     {
@@ -135,11 +135,12 @@ app.get('/dynamicwordcount', async (req : Request, res : Response) => {
 
 /**
  * Count the words of a HTML page, as well as any embedded HTML pages on that page.
+ * This method is not for content dynamically rendered through JavaScript, for that @see dynamicWordCount
  * @function
  * @param url - the URL of the page to be word counted
  * @param successfulUrls - An array of the pages successful counted, shared amongst the whole application
  * @param failedUrls - An array of the URLs that resulted in an error when fetching (not contributing to final word count)
- * @returns the count as a number ( must be awaited )
+ * @returns the count as a number
  */
 export function wordCount(url : string, successfulUrls : string[], failedUrls : string[]) : number
 {
@@ -177,6 +178,51 @@ export function wordCount(url : string, successfulUrls : string[], failedUrls : 
   }  
   
   return count;
+}
+
+/**
+ * Count the words of a HTML page as it would be rendered dynamically from a users browser
+ * For a simple word count that does a simple parse of the HTML source, @see wordCount
+ * @function
+ * @param url - the URL of the page to be word counted
+ * @returns the count as a number ( must be awaited )
+ */
+export async function dynamicWordCount(url : string) : Promise<number>
+{
+  /*
+    The following settings in launch assist in Dockerization.
+    headless is set as true, 
+    headless : "new", gives the error:
+    "Something went wrong while running Puppeteer: Error: Requesting main frame too early!"
+  */
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--disable-setuid-sandbox",
+        "--no-sandbox",
+        "--single-process",
+        "--no-zygote",
+      ],
+      executablePath:
+        process.env.NODE_ENV === "production"
+          ? process.env.PUPPETEER_EXECUTABLE_PATH
+          : puppeteer.executablePath(),
+    });
+    try {
+      const page = await browser.newPage();
+      await page.goto(url);
+      const extractedText = await page.$eval('*', (el : any) => el.innerText);
+      await browser.close();
+      // split the text on full stop, comma, space, and newline
+      return extractedText.split(/[\s\n\.,\r]+/).length; 
+    } catch (e) {
+      console.error(e);
+    } finally {
+      await browser.close();
+    }
+
+  // Error code
+  return -1;
 }
 
 /**
@@ -263,6 +309,12 @@ export function getEmbeddedPageUrls(body : string) : string[] {
   return embeddedPageUrls;
 }
 
+/**
+ * A helper function to append a http:// to a url if necessary
+ * @function
+ * @param url - string of url
+ * @returns the url with http:// appended if necessary
+ */
 function addHTTPtoUrl(url : string) : string
 {
   if(url.substring(0,7).toLowerCase() !== 'http://'
@@ -296,32 +348,5 @@ export function urlResolver(originalUrl : string, newUrl : string) : string {
   return `${originalUrl}${newUrl.replace(/^[.]/,'').replace(/\//,'')}`;
 }
 
-export async function jsCount(url : string) : Promise<number>
-{
-  try {
-  // Launch the browser
-  const browser = await puppeteer.launch({headless: "new"}); // new headless implementation
 
-  // Create a page
-  const page = await browser.newPage();
-
-  // Go to your site
-  await page.goto(url);
-
-  // extract all innerText from HTML elements rendered in headless browser
-  const extractedText = await page.$eval('*', (el : any) => el.innerText);
-  await browser.close();
-
-  // split the text on full stop, comma, space, and newline
-  return extractedText.split(/[\s\n\.,\r]+/).length;
-
-  } catch (error) {
-    console.log(error);
-  }
-
-  // Error code
-  return -1;
-}
-
-
-module.exports = {app, openapiSpecification, wordCount, getEmbeddedPageUrls, urlResolver, jsCount};
+module.exports = {app, openapiSpecification, wordCount, getEmbeddedPageUrls, urlResolver, dynamicWordCount};
