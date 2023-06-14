@@ -70,9 +70,11 @@ Repository:
 ### Manual testing (browser)
 
 `localhost:4000/wordcount?page=<URL to page>`
+
 <http://localhost:4000/wordcount?page=http://paradigmzero.github.io/webpagewordcounter/index.html>
 
 `localhost:4000/dynamicwordcount?page=<URL to page>`
+
 <http://localhost:4000/dynamicwordcount?page=http://paradigmzero.github.io/webpagewordcounter/scriptText.html>
 
 
@@ -93,6 +95,7 @@ Run as follows:
 You can also test the endpoints individually as so:
 
 `newman run WebpageWordCounter.postman_collection.json --folder wordcount`
+
 `newman run WebpageWordCounter.postman_collection.json --folder dynamicwordcount`
 
 # Development related
