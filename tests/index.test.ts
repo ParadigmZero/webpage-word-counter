@@ -1,9 +1,15 @@
-import {urlResolver, getEmbeddedPageUrls, wordCount, dynamicWordCount} from "../src/index";
+import {urlResolver, addHTTPtoUrl, getEmbeddedPageUrls, wordCount, dynamicWordCount} from "../src/index";
 
 test("urls are properly resolved (with base url) in the urlResolver method", () => {
     expect(urlResolver("http://www.mydomain.com/","./dir/mypage.html")).toEqual("http://www.mydomain.com/dir/mypage.html");
     expect(urlResolver("http://www.mydomain.com/","mypage.html")).toEqual("http://www.mydomain.com/mypage.html");
     expect(urlResolver("http://www.mydomain.com/","http://www.adifferentsite.com")).toEqual("http://www.adifferentsite.com");
+});
+
+test("Add http:// to urls where appropriate in addHTTPtoUrl method", () => {
+    expect(addHTTPtoUrl("google.com" as string)).toEqual("http://google.com");
+    expect(addHTTPtoUrl("http://google.com" as string)).toEqual("http://google.com");
+    expect(addHTTPtoUrl("https://google.com" as string)).toEqual("https://google.com");
 });
 
 test("The getEmbeddedPageUrls function should extract the url from embedded content tags", () => {
