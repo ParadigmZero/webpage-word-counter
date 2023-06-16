@@ -9,6 +9,7 @@ import puppeteer from 'puppeteer';
 const app : Express = express();
 const fetch = require('sync-fetch');
 
+// used for settings for Swagger
 const options = {
     failOnErrors: true,
     definition: {
@@ -56,7 +57,7 @@ app.get('/wordcount', (req : Request, res : Response) => {
   let count : number = 0;
   let successfulUrls : string[] = [];
   let failedUrls : string[] = [];
-  let responseBody : {message:string,wordCount?:number,countedPages?:string[],uncountedPages?:string[]} = 
+  let responseBody : {message:string,wordCount:number,countedPages:string[],uncountedPages:string[]} = 
   {message:"",
   wordCount:count,
   countedPages:successfulUrls,
@@ -118,7 +119,7 @@ app.get('/dynamicwordcount', async (req : Request, res : Response) => {
     // Add a http:// to the entered url, if it is missing.
     req.query.page = addHTTPtoUrl(req.query.page as string);
 
-    let count = await dynamicWordCount(req.query.page as string)
+    let count = await dynamicWordCount(req.query.page as string); // returns -1 if it fails
 
     if(count < 0)
     {
@@ -160,16 +161,19 @@ export function wordCount(url : string, successfulUrls : string[], failedUrls : 
     return 0;
   }
 
-  /* shorten url just to a directory
-   take off anything after a /
-   e.g. http://mysite.com/mydir/index.html -> http://mysite.com/mydir/
-  */
-  url = url.replace(/[^\/]*$/,'');
-
   // count the words of this page
   count += wordsCounter(body, { isHtml: true }).wordsCount;
 
   // 2. get word count for all embedded html pages
+
+  /* shorten url just to a directory
+   take off anything after a /
+   e.g. http://mysite.com/mydir/index.html -> http://mysite.com/mydir/
+   this is in case the embedded elements have relative urls, e.g. 'about.html' or '/about.html'
+  */
+  url = url.replace(/[^\/]*$/,'');
+
+  // extract all the embedded HTML URLs from the current HTML source
   let temp : string[] = getEmbeddedPageUrls(body);
 
   for(const embeddedUrl of temp)
@@ -213,6 +217,9 @@ export async function dynamicWordCount(url : string) : Promise<number>
       await page.goto(url);
       const extractedText = await page.$eval('*', (el : any) => el.innerText);
       await browser.close();
+
+      // console.log(extractedText.split(/[\s\n\.,\r]+/));
+
       // split the text on full stop, comma, space, and newline
       return extractedText.split(/[\s\n\.,\r]+/).length; 
     } catch (e) {
@@ -232,7 +239,7 @@ export async function dynamicWordCount(url : string) : Promise<number>
  * @returns an array of strings, of all the (relative/absolute) urls, of embedded HTML elements
  */
 export function getEmbeddedPageUrls(body : string) : string[] {
-  let temp : string[];
+  let temp : string[]; // helper variable
   let embeddedPageUrls : string[] = [];
 
   let iframes : RegExpMatchArray | null = body.match(/<[ ]*iframe[^>]*>/g);
