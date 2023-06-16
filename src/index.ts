@@ -349,4 +349,4 @@ export function urlResolver(originalUrl : string, newUrl : string) : string {
 }
 
 
-module.exports = {app, wordCount, dynamicWordCount, addHTTPtoUrl, getEmbeddedPageUrls, urlResolver};
+module.exports = {app, openapiSpecification, wordCount, dynamicWordCount, addHTTPtoUrl, getEmbeddedPageUrls, urlResolver};
