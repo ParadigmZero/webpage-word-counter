@@ -138,7 +138,10 @@ or
 
 ## Testing the HTTPS version
 
-Postman collection must be changed to run with HTTPS also, etc. (TO BE WRITTEN...)
+Change the base_url variable from http://localhost:4000 to https://localhost:4000
+( simple replace `http://localhost:4000`` > `https://localhost:4000` in `WebpageWordCounter.postman_collection.json`` )
+
+Making the Postman tests interchangeable for HTTP and HTTPS will be worked on later. To use the Postman GUI either add the certificates to Postman, or for the collection make sure "Enable SSL certificate verification" is disabled in the settings.
 
 When running Postman Newman CLI, add the following to the end of your command: `--ssl-client-cert ./ssl/cert.pem --ssl-client-key ./ssl/key.pem --insecure`
 
