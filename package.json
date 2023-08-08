@@ -6,6 +6,8 @@
   "scripts": {
     "start": "nodemon ./src/server.ts",
     "prod": "ts-node ./src/server.ts",
+    "start-https": "HTTPS=1 nodemon ./src/server.ts",
+    "prod-https": "HTTPS=1 ts-node ./src/server.ts",
     "test": "jest"
   },
   "keywords": [],

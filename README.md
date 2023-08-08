@@ -90,7 +90,7 @@ This requires Node.JS/npm to be installed, and then Newman to be installed ( i.e
 
 Run as follows:
 
-`newman run WebpageWordCounter.postman_collection.json`
+`newman run WebpageWordCounter.postman_collection.json --ssl-client-cert ssl/cert.pem --ssl-client-key ssl/key.pem --insecure`
 
 Further options:
 
@@ -119,7 +119,29 @@ The Master branch is automatically deployed there.
 Unit tests (JUnit) can be run with `npm test`.
 
 
+# Using HTTPS ( in progress)
 
+## Setup for HTTPS
 
+In the `./ssl/.` folder, provider your own private key, as `key.pem`, and public certficate as `cert.pem`. Or generate a simple sample self-signed certficate with the following command:
 
+`(cd ssl && bash ./gencerts.sh && rm csr.pem)`
 
+## Running with HTTPS
+
+Watching with Nodemon:
+`npm run start-https`
+
+or
+
+`npm run prod-https`
+
+## Testing the HTTPS version
+
+Postman collection must be changed to run with HTTPS also, etc. (TO BE WRITTEN...)
+
+When running Postman Newman CLI, add the following to the end of your command: `--ssl-client-cert ./ssl/cert.pem --ssl-client-key ./ssl/key.pem --insecure`
+
+For instance:
+
+`newman run WebpageWordCounter.postman_collection.json --ssl-client-cert ./ssl/cert.pem --ssl-client-key ./ssl/key.pem --insecure`
