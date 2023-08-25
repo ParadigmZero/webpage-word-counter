@@ -129,4 +129,4 @@ The Master branch is automatically deployed there.
 
 # Development related
 
-Unit tests (JUnit) can be run with `npm test`.
+Unit tests (Jest) can be run with `npm test`.
