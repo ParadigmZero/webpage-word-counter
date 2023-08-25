@@ -6,6 +6,12 @@ There are two endpoints that can be used to count the words of a webpage, `wordc
 
 Simply perform a HTTP GET request on either endpoint, passing in a query parameter named `page` with the url to the page. See [testing](#testing).
 
+# (optional for use with HTTPS) generating certificates
+
+In the `./ssl/.` folder, provide your own private key, as `key.pem`, and public certificate as `cert.pem`. Or generate a simple example self-signed certificate with the following command:
+
+`npm run gencerts`
+
 # Details/limitations API
 
 ## /wordcount
@@ -32,7 +38,7 @@ Options:
 
 ## 1. Docker ( containerized )
 
-Spin up the container
+Currently setup with HTTP option. Spin up the container
 
 `docker-compose up`
 
@@ -50,8 +56,15 @@ Take down the container
 
 ## Running ( interactive with Nodemon )
 
-`npm start` ( interactive mode with Nodemon )
-`npm run prod` ( running without Nodemon )
+### http
+
+`npm start` ( interactive mode )
+`npm run prod`
+
+### https
+
+`npm run start-https` ( interactive mode )
+`npm run prod-https`
 
 # Testing
 
@@ -82,15 +95,15 @@ Repository:
 
 Options:
 
-1. Import the collection file `WebpageWordCounter.postman_collection.json` into Postman GUI, run whole collection or request(s). Change the `base_url` variable if you have it deployed elsewhere.
+1. Import the collection file `WebpageWordCounter.postman_collection.json` into Postman GUI, run whole collection or request(s). Change the `base_url` variable if you have it deployed elsewhere, and change to from `http://` to `https://` if you are using HTTPS.
 
 2. Run a collection with the Newman ( a Postman CLI )
 
-This requires Node.JS/npm to be installed, and then Newman to be installed ( i.e. `npm install -g newman` )
+There are two standard options in the `package.json`:
+- `npm run apitest`
+- `npm run apitest-https` ( with https )
 
-Run as follows:
-
-`newman run WebpageWordCounter.postman_collection.json`
+Further information and options with `newman` can be inferred from the `package.json`. To run your `newman` not in the `npm run` scripts, install it globally ( `npm install -g newman`) and follow the guide below.
 
 Further options:
 
@@ -102,7 +115,7 @@ Further options:
 
 `--folder dynamicwordcount`
 
-Sample run:
+For example, running just the `dynamicwordcount` where the endpoint is located `https://webpagewordcount.onrender.com` ( standard http) would be this command:
 
 `newman run WebpageWordCounter.postman_collection.json --env-var "base_url=https://webpagewordcount.onrender.com" --folder wordcount`
 
@@ -117,9 +130,3 @@ The Master branch is automatically deployed there.
 # Development related
 
 Unit tests (JUnit) can be run with `npm test`.
-
-
-
-
-
-
