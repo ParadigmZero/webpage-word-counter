@@ -40,7 +40,7 @@ Options:
 
 Currently setup with HTTP option. Spin up the container
 
-`docker-compose up`
+`docker-compose up -d`
 
 Take down the container
 
@@ -48,13 +48,26 @@ Take down the container
 
 ## 2. Node.js
 
-( Node.js must be installed on your machine)
+### Node Version Manager (NVM) (optional but recommended)
 
-## Initializing
+Easily installable via package managers, for example:
 
-`npm init`
+- WSL2/MacOS/Linux: <https://formulae.brew.sh/formula/nvm>
+- Windows: Chocolatey or Scoop
 
-## Running ( interactive with Nodemon )
+In project root directory enter:
+
+`nvm install`
+
+to (install and) use the maintenance version of Node (which Puppeteer follows). 
+
+### Install project dependencies
+
+`npm i`
+
+### Running ( interactive with Nodemon )
+
+WSL users, may come across issues, see if you do.
 
 ### http
 
@@ -93,6 +106,8 @@ Repository:
 
 ### Postman
 
+Get the app [running](#running) before testing.
+
 Options:
 
 1. Import the collection file `WebpageWordCounter.postman_collection.json` into Postman GUI, run whole collection or request(s). Change the `base_url` variable if you have it deployed elsewhere, and change to from `http://` to `https://` if you are using HTTPS.
@@ -115,18 +130,30 @@ Further options:
 
 `--folder dynamicwordcount`
 
-For example, running just the `dynamicwordcount` where the endpoint is located `https://webpagewordcount.onrender.com` ( standard http) would be this command:
+For example, running just the `dynamicwordcount` where the endpoint is located <https://webpagewordcount.onrender.com> would be this command:
 
 `newman run WebpageWordCounter.postman_collection.json --env-var "base_url=https://webpagewordcount.onrender.com" --folder wordcount`
 
 # Deployment ( as of date of this README publication )
 
-Dockerized application has a free-tier deployment with `Render.com` at the following URL.
+Dockerized application has a free-tier deployment with Render (<https://render.com/>) at the following URL.
 
 <https://webpagewordcount.onrender.com>
 
-The Master branch is automatically deployed there.
+The Master branch is automatically deployed there. Note: given this is a free service, if this has not been accessed for some time there may be an initial delay in responsiveness.
 
 # Development related
 
 Unit tests (Jest) can be run with `npm test`.
+
+# Issues (with Puppeteer) on WSL
+
+The official guide:
+
+<https://pptr.dev/troubleshooting>
+
+has advice including installing required dependencies:
+
+`sudo apt install libgtk-3-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2`
+
+It fixed the authors issues (Ubuntu WSL 2).
