@@ -42,13 +42,22 @@ Take down the container
 
 ## 2. Node.js
 
-( Node.js must be installed on your machine)
+### Node Version Manager (NVM) (optional but recommended)
 
-## Initializing
+Easily installable via package managers, for example:
+
+- WSL2/MacOS/Linux: <https://formulae.brew.sh/formula/nvm>
+- Windows: Chocolatey or Scoop
+
+In project root directory enter:
+
+`nvm install`
+
+### Initializing
 
 `npm init`
 
-## Running ( interactive with Nodemon )
+### Running ( interactive with Nodemon )
 
 `npm start` ( interactive mode with Nodemon )
 `npm run prod` ( running without Nodemon )

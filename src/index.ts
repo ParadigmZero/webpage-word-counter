@@ -242,12 +242,12 @@ export function getEmbeddedPageUrls(body : string) : string[] {
   let temp : string[]; // helper variable
   let embeddedPageUrls : string[] = [];
 
-  let iframes : RegExpMatchArray | null = body.match(/<[ ]*iframe[^>]*>/g);
+  let embeddedElements : RegExpMatchArray | null = body.match(/<[ ]*iframe[^>]*>/g);
   //extract data
-  if(iframes !== null)
+  if(embeddedElements !== null)
   {
     // convert to lower case for ease of processing
-    temp = iframes.map((iframe)=>{ 
+    temp = embeddedElements.map((iframe)=>{ 
       return iframe.toLowerCase();
     });
     // filter those out that don't have a src
@@ -264,12 +264,12 @@ export function getEmbeddedPageUrls(body : string) : string[] {
     }  
   }
 
-  let embeds : RegExpMatchArray | null = body.match(/<[ ]*embed[^>]*>/g);
+  embeddedElements = body.match(/<[ ]*embed[^>]*>/g);
     //extract data
-    if(embeds !== null)
+    if(embeddedElements !== null)
     {
       // convert to lowercase
-      temp = embeds.map((embed)=>{ return embed.toLowerCase()});
+      temp = embeddedElements.map((embed)=>{ return embed.toLowerCase()});
       // filter out those not of type "text/html" ( must have a source too)
       temp = temp.filter((embed)=>{
         return /type[ ]*=[ ]*["']text\/html["']/.test(embed)
@@ -287,11 +287,12 @@ export function getEmbeddedPageUrls(body : string) : string[] {
       }  
     }
 
-  let objects : RegExpMatchArray | null = body.match(/<[ ]*object[^>]*>/g);
-  if(objects !== null)
+  embeddedElements = body.match(/<[ ]*object[^>]*>/g);
+  
+  if(embeddedElements !== null)
   {
     // convert to lowercase
-    temp = objects.map((object)=>{
+    temp = embeddedElements.map((object)=>{
       return object.toLowerCase();
     }
       );
