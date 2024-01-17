@@ -40,7 +40,7 @@ Options:
 
 Currently setup with HTTP option. Spin up the container
 
-`docker-compose up`
+`docker-compose up -d`
 
 Take down the container
 
@@ -58,6 +58,8 @@ Easily installable via package managers, for example:
 In project root directory enter:
 
 `nvm install`
+
+to (install and) use the maintenance version of Node (which Puppeteer follows). 
 
 ### Install project dependencies
 
