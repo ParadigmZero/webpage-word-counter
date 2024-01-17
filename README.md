@@ -65,6 +65,8 @@ In project root directory enter:
 
 ### Running ( interactive with Nodemon )
 
+WSL users, may come across issues, see if you do.
+
 ### http
 
 `npm start` ( interactive mode )
@@ -139,3 +141,15 @@ The Master branch is automatically deployed there. Note: given this is a free se
 # Development related
 
 Unit tests (Jest) can be run with `npm test`.
+
+# Puppeteer issues (WSL2)
+
+The official guide:
+
+<https://pptr.dev/troubleshooting>
+
+has advice including installing required dependencies:
+
+`sudo apt install libgtk-3-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2`
+
+It fixed the authors issues (Ubuntu WSL2).
