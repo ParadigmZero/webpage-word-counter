@@ -59,9 +59,9 @@ In project root directory enter:
 
 `nvm install`
 
-### Initializing
+### Install project dependencies
 
-`npm init`
+`npm i`
 
 ### Running ( interactive with Nodemon )
 
@@ -134,7 +134,7 @@ Dockerized application has a free-tier deployment with Render (<https://render.c
 
 <https://webpagewordcount.onrender.com>
 
-The Master branch is automatically deployed there. Note: if this has not been accessed for some time there may be an initial delay in responsiveness.
+The Master branch is automatically deployed there. Note: given this is a free service, if this has not been accessed for some time there may be an initial delay in responsiveness.
 
 # Development related
 
