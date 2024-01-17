@@ -124,17 +124,17 @@ Further options:
 
 `--folder dynamicwordcount`
 
-For example, running just the `dynamicwordcount` where the endpoint is located `https://webpagewordcount.onrender.com` ( standard http) would be this command:
+For example, running just the `dynamicwordcount` where the endpoint is located <https://webpagewordcount.onrender.com> would be this command:
 
 `newman run WebpageWordCounter.postman_collection.json --env-var "base_url=https://webpagewordcount.onrender.com" --folder wordcount`
 
 # Deployment ( as of date of this README publication )
 
-Dockerized application has a free-tier deployment with `Render.com` at the following URL.
+Dockerized application has a free-tier deployment with Render (<https://render.com/>) at the following URL.
 
 <https://webpagewordcount.onrender.com>
 
-The Master branch is automatically deployed there.
+The Master branch is automatically deployed there. Note: if this has not been accessed for some time there may be an initial delay in responsiveness.
 
 # Development related
 
