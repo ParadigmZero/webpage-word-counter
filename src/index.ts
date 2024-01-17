@@ -218,8 +218,6 @@ export async function dynamicWordCount(url : string) : Promise<number>
       const extractedText = await page.$eval('*', (el : any) => el.innerText);
       await browser.close();
 
-      // console.log(extractedText.split(/[\s\n\.,\r]+/));
-
       // split the text on full stop, comma, space, and newline
       return extractedText.split(/[\s\n\.,\r]+/).length; 
     } catch (e) {
