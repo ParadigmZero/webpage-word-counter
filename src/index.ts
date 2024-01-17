@@ -200,7 +200,7 @@ export async function dynamicWordCount(url : string) : Promise<number>
     "Something went wrong while running Puppeteer: Error: Requesting main frame too early!"
   */
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: "new",
       args: [
         "--disable-setuid-sandbox",
         "--no-sandbox",
