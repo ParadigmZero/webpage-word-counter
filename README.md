@@ -104,6 +104,8 @@ Repository:
 
 ### Postman
 
+Get the app [running](#running) before testing.
+
 Options:
 
 1. Import the collection file `WebpageWordCounter.postman_collection.json` into Postman GUI, run whole collection or request(s). Change the `base_url` variable if you have it deployed elsewhere, and change to from `http://` to `https://` if you are using HTTPS.
@@ -142,7 +144,7 @@ The Master branch is automatically deployed there. Note: given this is a free se
 
 Unit tests (Jest) can be run with `npm test`.
 
-# Puppeteer issues (WSL2)
+# Issues (with Puppeteer) on WSL
 
 The official guide:
 
@@ -152,4 +154,4 @@ has advice including installing required dependencies:
 
 `sudo apt install libgtk-3-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2`
 
-It fixed the authors issues (Ubuntu WSL2).
+It fixed the authors issues (Ubuntu WSL 2).
