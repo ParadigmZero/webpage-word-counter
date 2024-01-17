@@ -4,4 +4,7 @@ npm-debug.log
 .nyc
 .env
 .DS_Store
+ssl/cert.pem
+ssl/key.pem
+ssl/csr.pem
 local

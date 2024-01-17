@@ -138,7 +138,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/dynamicwordcount?page=http://www.incompleteurl",
+							"raw": "{{base_url}}/dynamicwordcount?page=https://www.incompleteurl",
 							"host": [
 								"{{base_url}}"
 							],
@@ -148,7 +148,7 @@
 							"query": [
 								{
 									"key": "page",
-									"value": "http://www.incompleteurl"
+									"value": "https://www.incompleteurl"
 								}
 							]
 						}
@@ -301,7 +301,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/wordcount?page=http://www.incompleteurl",
+							"raw": "{{base_url}}/wordcount?page=https://www.incompleteurl",
 							"host": [
 								"{{base_url}}"
 							],
@@ -311,7 +311,7 @@
 							"query": [
 								{
 									"key": "page",
-									"value": "http://www.incompleteurl"
+									"value": "https://www.incompleteurl"
 								}
 							]
 						}
@@ -337,7 +337,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/wordcount?page=http://www.google.com",
+							"raw": "{{base_url}}/wordcount?page=https://www.google.com",
 							"host": [
 								"{{base_url}}"
 							],
@@ -347,7 +347,7 @@
 							"query": [
 								{
 									"key": "page",
-									"value": "http://www.google.com"
+									"value": "https://www.google.com"
 								}
 							]
 						}
@@ -413,7 +413,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/wordcount?page=http://paradigmzero.github.io/webpagewordcounter/index.html",
+							"raw": "{{base_url}}/wordcount?page=https://paradigmzero.github.io/webpagewordcounter/index.html",
 							"host": [
 								"{{base_url}}"
 							],
@@ -423,7 +423,7 @@
 							"query": [
 								{
 									"key": "page",
-									"value": "http://paradigmzero.github.io/webpagewordcounter/index.html"
+									"value": "https://paradigmzero.github.io/webpagewordcounter/index.html"
 								}
 							]
 						}

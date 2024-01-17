@@ -6,7 +6,12 @@
   "scripts": {
     "start": "nodemon ./src/server.ts",
     "prod": "ts-node ./src/server.ts",
-    "test": "jest"
+    "test": "jest",
+    "gencerts": "cd ssl && bash ./gencerts.sh && rm csr.pem",
+    "start-https": "HTTPS=1 nodemon ./src/server.ts",
+    "prod-https": "HTTPS=1 ts-node ./src/server.ts",
+    "apitest": "newman run WebpageWordCounter.postman_collection.json",
+    "apitest-https": "newman run WebpageWordCounter.postman_collection.json --ssl-client-cert ./ssl/cert.pem --ssl-client-key ./ssl/key.pem --insecure --env-var \"base_url=https://localhost:4000\""
   },
   "keywords": [],
   "author": "Joseph Alton",
@@ -15,6 +20,7 @@
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "html-word-count": "^1.0.0",
+    "newman": "^5.3.2",
     "npm": "^9.6.7",
     "prod": "^1.0.1",
     "puppeteer": "^20.6.0",
