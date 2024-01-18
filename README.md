@@ -2,7 +2,7 @@
 
 A simple API that counts the visible words on a web page (i.e. what the user sees).
 
-There are two endpoints that can be used to count the words of a webpage, `wordcount` which just counts the words in HTML. `dynamicwordcount` will count the words on a page, as if it is rendered in a users browser, thus taking into account heavily scripted pages, which significantly what is shown to a user via the DOM.
+There are two endpoints that can be used to count the words of a webpage, `wordcount` which just counts the words in HTML. `dynamicwordcount` will count the words on a page, as if it is rendered in a users browser, thus taking into account heavily scripted pages, which may alter what is shown to the user significantly.
 
 Simply perform a HTTP GET request on either endpoint, passing in a query parameter named `page` with the url to the page. See [testing](#testing).
 
@@ -11,6 +11,8 @@ Simply perform a HTTP GET request on either endpoint, passing in a query paramet
 In the `./ssl/.` folder, provide your own private key, as `key.pem`, and public certificate as `cert.pem`. Or generate a simple example self-signed certificate with the following command:
 
 `npm run gencerts`
+
+You will need `openssl` installed. For Linux/WSL/MacOS it is most likely installed already, for Windows the Chocolatey/Scoop package manager is a good source.
 
 # Details/limitations API
 
@@ -28,7 +30,7 @@ Text within `<noscript>` tags is counted as well in the word count, even though 
 
 ## /dynamicwordcount
 
-This will count words for a HTML page that heavily modifies the DOM with scripts (for instance). It can count standard HTML pages and those HTML pages with JavaScript rendered text.
+This will count words for a HTML page that heavily modifies the DOM with scripts (for instance). It can count standard HTML pages and those HTML pages with JavaScript rendered text based on what the user actually sees. It uses Puppeteer and headless browser (Chrome) to do this.
 
 Unlike the `/wordcount` endpoint however it is not presently effective on counting HTML pages that are in embedded elements also.
 
