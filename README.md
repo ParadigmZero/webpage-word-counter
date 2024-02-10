@@ -83,7 +83,7 @@ WSL users, may come across issues, see if you do.
 
 # Testing
 
-View the API docs at the root directory i.e. `<API-URL>/` for further documentation and the ability to test manually
+View the API (OpenAI) docs (Swagger) at the root directory i.e. `<API-URL>/` for further documentation and the ability to test manually
 
 ## API
 
