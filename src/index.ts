@@ -1,25 +1,25 @@
 /**
  * @author Joseph Alton
  */
-import express from 'express';
-import { Request, Response, Express } from 'express';
-import wordsCounter from 'word-counting'
-import swaggerJsDoc from 'swagger-jsdoc';
-import puppeteer from 'puppeteer';
-const app : Express = express();
-const fetch = require('sync-fetch');
+import express from "express";
+import { Request, Response, Express } from "express";
+import wordsCounter from "word-counting";
+import swaggerJsDoc from "swagger-jsdoc";
+import puppeteer from "puppeteer";
+const app: Express = express();
+import fetch from "sync-fetch";
 
 // used for settings for Swagger
 const options = {
-    failOnErrors: true,
-    definition: {
-        openapi: '3.0.0',
-        info: {
-            title: 'Webpage word counter API',
-            version: (process.env.npm_package_version as string),
-        },
+  failOnErrors: true,
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Webpage word counter API",
+      version: process.env.npm_package_version as string,
     },
-    apis: ["src/index.ts"]
+  },
+  apis: ["src/index.ts"],
 };
 
 export const openapiSpecification = swaggerJsDoc(options);
@@ -44,36 +44,44 @@ export const openapiSpecification = swaggerJsDoc(options);
  *         description: Bad Request - need to include query parameter 'page' with a valid webpage URL
  *       404:
  *         description: Unsuccessful / partially successful word count, (embedded) webpage(s) not counted
- *          
+ *
  */
-app.get('/wordcount', (req : Request, res : Response) => {
+app.get("/wordcount", (req: Request, res: Response) => {
   // If no query parameter named page is passed in, return a 400 indicating Bad Request
-  if(req.query.page === undefined)
-  {
-    res.status(400).send('A query parameter named \'page\' must be included in the HTTP GET request, e.g. <API-URL>/?page=http://www.foo.com/bar.html');
+  if (req.query.page === undefined) {
+    res
+      .status(400)
+      .send(
+        "A query parameter named 'page' must be included in the HTTP GET request, e.g. <API-URL>/?page=http://www.foo.com/bar.html"
+      );
     return;
   }
 
-  let count : number = 0;
-  let successfulUrls : string[] = [];
-  let failedUrls : string[] = [];
-  let responseBody : {message:string,wordCount:number,countedPages:string[],uncountedPages:string[]} = 
-  {message:"",
-  wordCount:count,
-  countedPages:successfulUrls,
-  uncountedPages:failedUrls};
+  let count: number = 0;
+  const successfulUrls: string[] = [];
+  const failedUrls: string[] = [];
+  const responseBody: {
+    message: string;
+    wordCount: number;
+    countedPages: string[];
+    uncountedPages: string[];
+  } = {
+    message: "",
+    wordCount: count,
+    countedPages: successfulUrls,
+    uncountedPages: failedUrls,
+  };
 
   // Add a http:// to the entered url, if it is missing.
   req.query.page = addHTTPtoUrl(req.query.page as string);
 
   // Try fetching the webpage from the URL
-  count = wordCount((req.query.page as string), successfulUrls, failedUrls);
+  count = wordCount(req.query.page as string, successfulUrls, failedUrls);
 
   responseBody.wordCount = count;
 
-  if(failedUrls.length > 0)
-  {
-    responseBody.message=`Failed to fetch ${failedUrls.length} (embedded) page(s) for word count.`;
+  if (failedUrls.length > 0) {
+    responseBody.message = `Failed to fetch ${failedUrls.length} (embedded) page(s) for word count.`;
     /*
      A "404 Not Found" is used in case, because some/all pages could not be found for the word count.
     */
@@ -81,7 +89,7 @@ app.get('/wordcount', (req : Request, res : Response) => {
     return;
   }
 
-  responseBody.message=`Success fetching ${successfulUrls.length} page(s) to word count.`
+  responseBody.message = `Success fetching ${successfulUrls.length} page(s) to word count.`;
 
   res.status(200).send(responseBody);
 });
@@ -106,32 +114,35 @@ app.get('/wordcount', (req : Request, res : Response) => {
  *         description: Bad Request - need to include query parameter 'page' with a valid webpage URL
  *       404:
  *         description: Unsuccessful word count, check URL
- *          
+ *
  */
-app.get('/dynamicwordcount', async (req : Request, res : Response) => {
-    // If no query parameter named page is passed in, return a 400 indicating Bad Request
-    if(req.query.page === undefined)
-    {
-      res.status(400).send('A query parameter named \'page\' must be included in the HTTP GET request, e.g. <API-URL>/htmljs?page=http://www.foo.com/bar.html');
-      return;
-    }
+app.get("/dynamicwordcount", async (req: Request, res: Response) => {
+  // If no query parameter named page is passed in, return a 400 indicating Bad Request
+  if (req.query.page === undefined) {
+    res
+      .status(400)
+      .send(
+        "A query parameter named 'page' must be included in the HTTP GET request, e.g. <API-URL>/htmljs?page=http://www.foo.com/bar.html"
+      );
+    return;
+  }
 
-    // Add a http:// to the entered url, if it is missing.
-    req.query.page = addHTTPtoUrl(req.query.page as string);
+  // Add a http:// to the entered url, if it is missing.
+  req.query.page = addHTTPtoUrl(req.query.page as string);
 
-    let count = await dynamicWordCount(req.query.page as string); // returns -1 if it fails
+  const count = await dynamicWordCount(req.query.page as string); // returns -1 if it fails
 
-    if(count < 0)
-    {
-      /*
+  if (count < 0) {
+    /*
        A "404 Not Found", the web page could not be retrieved
       */
-      res.status(404).send(`Failed word count at URL: ${req.query.page}, check url/page.`);
-      return;
-    }
+    res
+      .status(404)
+      .send(`Failed word count at URL: ${req.query.page}, check url/page.`);
+    return;
+  }
 
-    res.status(200).send(`${count}`);
-  
+  res.status(200).send(`${count}`);
 });
 
 /**
@@ -143,10 +154,13 @@ app.get('/dynamicwordcount', async (req : Request, res : Response) => {
  * @param failedUrls - An array of the URLs that resulted in an error when fetching (not contributing to final word count)
  * @returns the count as a number
  */
-export function wordCount(url : string, successfulUrls : string[], failedUrls : string[]) : number
-{
-  let count : number = 0;
-  let body : string;
+export function wordCount(
+  url: string,
+  successfulUrls: string[],
+  failedUrls: string[]
+): number {
+  let count: number = 0;
+  let body: string;
   // 1.  get word count for current page
   try {
     console.log(`fetch ${url}`);
@@ -155,7 +169,7 @@ export function wordCount(url : string, successfulUrls : string[], failedUrls : 
     // Convert the response into text
     body = response.text();
   } catch (error) {
-    console.log(`Error fetching page ${url}`)
+    console.log(`Error fetching page ${url}`);
     console.log(error);
     failedUrls.push(url);
     return 0;
@@ -171,16 +185,19 @@ export function wordCount(url : string, successfulUrls : string[], failedUrls : 
    e.g. http://mysite.com/mydir/index.html -> http://mysite.com/mydir/
    this is in case the embedded elements have relative urls, e.g. 'about.html' or '/about.html'
   */
-  url = url.replace(/[^\/]*$/,'');
+  url = url.replace(/[^\/]*$/, "");
 
   // extract all the embedded HTML URLs from the current HTML source
-  let temp : string[] = getEmbeddedPageUrls(body);
+  const temp: string[] = getEmbeddedPageUrls(body);
 
-  for(const embeddedUrl of temp)
-  {
-    count += wordCount(urlResolver(url, embeddedUrl), successfulUrls, failedUrls);
-  }  
-  
+  for (const embeddedUrl of temp) {
+    count += wordCount(
+      urlResolver(url, embeddedUrl),
+      successfulUrls,
+      failedUrls
+    );
+  }
+
   return count;
 }
 
@@ -191,40 +208,39 @@ export function wordCount(url : string, successfulUrls : string[], failedUrls : 
  * @param url - the URL of the page to be word counted
  * @returns the count as a number ( must be awaited )
  */
-export async function dynamicWordCount(url : string) : Promise<number>
-{
+export async function dynamicWordCount(url: string): Promise<number> {
   /*
     The following settings in launch assist in Dockerization.
     headless is set as true, 
     headless : "new", gives the error:
     "Something went wrong while running Puppeteer: Error: Requesting main frame too early!"
   */
-    const browser = await puppeteer.launch({
-      headless: "new",
-      args: [
-        "--disable-setuid-sandbox",
-        "--no-sandbox",
-        "--single-process",
-        "--no-zygote",
-      ],
-      executablePath:
-        process.env.NODE_ENV === "production"
-          ? process.env.PUPPETEER_EXECUTABLE_PATH
-          : puppeteer.executablePath(),
-    });
-    try {
-      const page = await browser.newPage();
-      await page.goto(url);
-      const extractedText = await page.$eval('*', (el : any) => el.innerText);
-      await browser.close();
+  const browser = await puppeteer.launch({
+    headless: "new",
+    args: [
+      "--disable-setuid-sandbox",
+      "--no-sandbox",
+      "--single-process",
+      "--no-zygote",
+    ],
+    executablePath:
+      process.env.NODE_ENV === "production"
+        ? process.env.PUPPETEER_EXECUTABLE_PATH
+        : puppeteer.executablePath(),
+  });
+  try {
+    const page = await browser.newPage();
+    await page.goto(url);
+    const extractedText = await page.$eval("*", (el: any) => el.innerText);
+    await browser.close();
 
-      // split the text on full stop, comma, space, and newline
-      return extractedText.split(/[\s\n\.,\r]+/).length; 
-    } catch (e) {
-      console.error(e);
-    } finally {
-      await browser.close();
-    }
+    // split the text on full stop, comma, space, and newline
+    return extractedText.split(/[\s\n\.,\r]+/).length;
+  } catch (e) {
+    console.error(e);
+  } finally {
+    await browser.close();
+  }
 
   // Error code
   return -1;
@@ -236,78 +252,83 @@ export async function dynamicWordCount(url : string) : Promise<number>
  * @param body a string of HTML that is to be scanned for embedded HTML
  * @returns an array of strings, of all the (relative/absolute) urls, of embedded HTML elements
  */
-export function getEmbeddedPageUrls(body : string) : string[] {
-  let temp : string[]; // helper variable
-  let embeddedPageUrls : string[] = [];
+export function getEmbeddedPageUrls(body: string): string[] {
+  let temp: string[]; // helper variable
+  const embeddedPageUrls: string[] = [];
 
-  let embeddedElements : RegExpMatchArray | null = body.match(/<[ ]*iframe[^>]*>/g);
+  let embeddedElements: RegExpMatchArray | null =
+    body.match(/<[ ]*iframe[^>]*>/g);
   //extract data
-  if(embeddedElements !== null)
-  {
+  if (embeddedElements !== null) {
     // convert to lower case for ease of processing
-    temp = embeddedElements.map((iframe)=>{ 
+    temp = embeddedElements.map((iframe) => {
       return iframe.toLowerCase();
     });
     // filter those out that don't have a src
-    temp = temp.filter((iframe)=>{
+    temp = temp.filter((iframe) => {
       return /src[ ]*=[ ]*["'][^'^"]+["']/.test(iframe);
     });
     // extract the urls
-    temp = temp.map((iframe)=>{
-      return /src[ ]*=[ ]*["'][^'^"]+["']/.exec(iframe)![0].replace(/src[ ]*=[ ]*["']([^'^"]+)["']/,'$1');
+    temp = temp.map((iframe) => {
+      return /src[ ]*=[ ]*["'][^'^"]+["']/
+        .exec(iframe)![0]
+        .replace(/src[ ]*=[ ]*["']([^'^"]+)["']/, "$1");
     });
     // iterate through the iframe urls doing a word count on each
-    for(const iframeUrl of temp) {
+    for (const iframeUrl of temp) {
       embeddedPageUrls.push(iframeUrl);
-    }  
+    }
   }
 
   embeddedElements = body.match(/<[ ]*embed[^>]*>/g);
-    //extract data
-    if(embeddedElements !== null)
-    {
-      // convert to lowercase
-      temp = embeddedElements.map((embed)=>{ return embed.toLowerCase()});
-      // filter out those not of type "text/html" ( must have a source too)
-      temp = temp.filter((embed)=>{
-        return /type[ ]*=[ ]*["']text\/html["']/.test(embed)
-        &&
-        /src[ ]*=[ ]*["'][^'"]+["']/.test(embed);
-      });
+  //extract data
+  if (embeddedElements !== null) {
+    // convert to lowercase
+    temp = embeddedElements.map((embed) => {
+      return embed.toLowerCase();
+    });
+    // filter out those not of type "text/html" ( must have a source too)
+    temp = temp.filter((embed) => {
+      return (
+        /type[ ]*=[ ]*["']text\/html["']/.test(embed) &&
+        /src[ ]*=[ ]*["'][^'"]+["']/.test(embed)
+      );
+    });
 
-      // get the urls
-      temp = temp.map((embed)=>{
-        return /src[ ]*=[ ]*["'][^'"]+["']/.exec(embed)![0].replace(/src[ ]*=[ ]*["']([^'"]+)["']/,'$1');
-      })
+    // get the urls
+    temp = temp.map((embed) => {
+      return /src[ ]*=[ ]*["'][^'"]+["']/
+        .exec(embed)![0]
+        .replace(/src[ ]*=[ ]*["']([^'"]+)["']/, "$1");
+    });
 
-      for(const embedUrl of temp) {
-        embeddedPageUrls.push(embedUrl);
-      }  
+    for (const embedUrl of temp) {
+      embeddedPageUrls.push(embedUrl);
     }
+  }
 
   embeddedElements = body.match(/<[ ]*object[^>]*>/g);
-  
-  if(embeddedElements !== null)
-  {
+
+  if (embeddedElements !== null) {
     // convert to lowercase
-    temp = embeddedElements.map((object)=>{
+    temp = embeddedElements.map((object) => {
       return object.toLowerCase();
-    }
-      );
+    });
     // filter out objects without a HTML data tag
-    temp = temp.filter((object)=>{
-        // looking for something like the following: data="./index.html"
-        return /data[ ]*=[ ]*["'][^'^"]*htm[l]["']/.test(object);
-      }
-    );
+    temp = temp.filter((object) => {
+      // looking for something like the following: data="./index.html"
+      return /data[ ]*=[ ]*["'][^'^"]*htm[l]["']/.test(object);
+    });
     // get the urls for all the object tags
-    temp = temp.map((obj)=>{
+    temp = temp.map((obj) => {
       // 1. for example: match data="./index.html", we already know it exists from before
       // 2. for example:  get ./index.html from data="./index.html"
-      return /data[ ]*=[ ]*["'][^'^"]*htm[l]["']/.exec(obj)![0].replace(/data[ ]*=[ ]*["']([^'^"]*)["']/,'$1');
-    })
-      
-    for(const objectTagUrl of temp) {
+      return /data[ ]*=[ ]*["'][^'^"]*htm[l]["']/
+        .exec(obj)![0]
+        .replace(/data[ ]*=[ ]*["']([^'^"]*)["']/, "$1");
+    });
+
+    for (const objectTagUrl of temp) {
       embeddedPageUrls.push(objectTagUrl);
     }
   }
@@ -321,15 +342,12 @@ export function getEmbeddedPageUrls(body : string) : string[] {
  * @param url - string of url
  * @returns the url with http:// appended if necessary
  */
-export function addHTTPtoUrl(url : string) : string
-{
-  if(url.substring(0,7).toLowerCase() !== 'http://'
-    &&
-    url.substring(0,8).toLowerCase() !== 'https://'
-  )
-  {
-
-    return 'http://'+url;
+export function addHTTPtoUrl(url: string): string {
+  if (
+    url.substring(0, 7).toLowerCase() !== "http://" &&
+    url.substring(0, 8).toLowerCase() !== "https://"
+  ) {
+    return "http://" + url;
   }
 
   return url;
@@ -345,14 +363,24 @@ export function addHTTPtoUrl(url : string) : string
  * or complete such as http://www.domain.com/dir/site.html
  * @returns a full URL that can be fetched, e.g. http://www.domain.com/site.html
  */
-export function urlResolver(originalUrl : string, newUrl : string) : string {
+export function urlResolver(originalUrl: string, newUrl: string): string {
   // if its a full URL i.e. has a http:// or https:// then use this url as the full url
-  if(newUrl.substring(0,7).toLowerCase() === 'http://' || newUrl.substring(0,8).toLowerCase() === 'https://') {
+  if (
+    newUrl.substring(0, 7).toLowerCase() === "http://" ||
+    newUrl.substring(0, 8).toLowerCase() === "https://"
+  ) {
     return newUrl;
   }
   // otherwise you will have to append this onto the end of the "base" url
-  return `${originalUrl}${newUrl.replace(/^[.]/,'').replace(/\//,'')}`;
+  return `${originalUrl}${newUrl.replace(/^[.]/, "").replace(/\//, "")}`;
 }
 
-
-module.exports = {app, openapiSpecification, wordCount, dynamicWordCount, addHTTPtoUrl, getEmbeddedPageUrls, urlResolver};
+module.exports = {
+  app,
+  openapiSpecification,
+  wordCount,
+  dynamicWordCount,
+  addHTTPtoUrl,
+  getEmbeddedPageUrls,
+  urlResolver,
+};
