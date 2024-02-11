@@ -1,13 +1,13 @@
 /**
  * @author Joseph Alton
  */
-import express from "express";
-import { Request, Response, Express } from "express";
+import express, { Request, Response, Express } from "express";
 import wordsCounter from "word-counting";
 import swaggerJsDoc from "swagger-jsdoc";
-import puppeteer from "puppeteer";
-const app: Express = express();
+import puppeteer, { Page } from "puppeteer";
 import fetch from "sync-fetch";
+
+const app: Express = express();
 
 // used for settings for Swagger
 const options = {
@@ -185,7 +185,7 @@ export function wordCount(
    e.g. http://mysite.com/mydir/index.html -> http://mysite.com/mydir/
    this is in case the embedded elements have relative urls, e.g. 'about.html' or '/about.html'
   */
-  url = url.replace(/[^\/]*$/, "");
+  url = url.replace(/[^/]*$/, "");
 
   // extract all the embedded HTML URLs from the current HTML source
   const temp: string[] = getEmbeddedPageUrls(body);
@@ -229,13 +229,13 @@ export async function dynamicWordCount(url: string): Promise<number> {
         : puppeteer.executablePath(),
   });
   try {
-    const page = await browser.newPage();
+    const page: Page = await browser.newPage();
     await page.goto(url);
     const extractedText = await page.$eval("*", (el: any) => el.innerText);
     await browser.close();
 
     // split the text on full stop, comma, space, and newline
-    return extractedText.split(/[\s\n\.,\r]+/).length;
+    return extractedText.split(/[\s\n.,\r]+/).length;
   } catch (e) {
     console.error(e);
   } finally {
@@ -375,12 +375,4 @@ export function urlResolver(originalUrl: string, newUrl: string): string {
   return `${originalUrl}${newUrl.replace(/^[.]/, "").replace(/\//, "")}`;
 }
 
-module.exports = {
-  app,
-  openapiSpecification,
-  wordCount,
-  dynamicWordCount,
-  addHTTPtoUrl,
-  getEmbeddedPageUrls,
-  urlResolver,
-};
+export default app;
