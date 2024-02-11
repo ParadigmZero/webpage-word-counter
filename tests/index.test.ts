@@ -179,7 +179,3 @@ test(`dynamicWordCount method does not effectively count words with embedded HTM
     )
   ).not.toEqual(140);
 });
-
-test("test to fail CI to check GitHub actions", async () => {
-  expect(false).toBe(true);
-});
