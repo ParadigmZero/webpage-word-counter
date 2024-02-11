@@ -231,6 +231,7 @@ export async function dynamicWordCount(url: string): Promise<number> {
   try {
     const page: Page = await browser.newPage();
     await page.goto(url);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const extractedText = await page.$eval("*", (el: any) => el.innerText);
     await browser.close();
 
