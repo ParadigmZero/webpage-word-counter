@@ -6,12 +6,14 @@
   "scripts": {
     "start": "nodemon ./src/server.ts",
     "prod": "ts-node ./src/server.ts",
-    "test": "jest",
+    "test": "vitest",
     "gencerts": "cd ssl && bash ./gencerts.sh && rm csr.pem",
     "start-https": "HTTPS=1 nodemon ./src/server.ts",
     "prod-https": "HTTPS=1 ts-node ./src/server.ts",
     "apitest": "newman run WebpageWordCounter.postman_collection.json",
-    "apitest-https": "newman run WebpageWordCounter.postman_collection.json --ssl-client-cert ./ssl/cert.pem --ssl-client-key ./ssl/key.pem --insecure --env-var \"base_url=https://localhost:4000\""
+    "apitest-https": "newman run WebpageWordCounter.postman_collection.json --ssl-client-cert ./ssl/cert.pem --ssl-client-key ./ssl/key.pem --insecure --env-var \"base_url=https://localhost:4000\"",
+    "dbup": "docker-compose up -d",
+    "dbdown": "docker-compose down -v"
   },
   "keywords": [],
   "author": "Joseph Alton",
@@ -33,7 +35,6 @@
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
-    "@types/jest": "^29.5.11",
     "@types/node": "^20.11.5",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.6",
@@ -42,11 +43,10 @@
     "@typescript-eslint/parser": "^6.21.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
-    "jest": "^29.7.0",
     "nodemon": "^3.0.3",
     "prettier": "^3.2.5",
-    "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vitest": "^1.3.1"
   }
 }
