@@ -12,7 +12,7 @@ In the `./ssl/.` folder, provide your own private key, as `key.pem`, and public 
 
 `npm run gencerts`
 
-You will need `openssl` installed. For Linux/WSL/MacOS it is most likely installed already, for Windows the Chocolatey/Scoop package manager is a good source.
+You will need `openssl` installed. For Linux/WSL/MacOS it is most likely installed already, for Windows the Scoop package manager is a good source.
 
 # Details/limitations API
 
@@ -55,7 +55,7 @@ Take down the container
 Easily installable via package managers, for example:
 
 - WSL2/MacOS/Linux: <https://formulae.brew.sh/formula/nvm>
-- Windows: Chocolatey or Scoop
+- Windows: Scoop: <https://scoop.sh/#/apps?q=nvm&id=cddd14120f633460c971cb449895a6c78181652a>
 
 In project root directory enter:
 
