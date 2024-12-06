@@ -150,12 +150,12 @@ Unit tests (Jest) can be run with `npm test`.
 
 # Issues (with Puppeteer) on WSL
 
-The official guide:
+Check the official guide:
 
 <https://pptr.dev/troubleshooting>
 
-has advice including installing required dependencies:
+A consistent/straight-forward solution is to install Chrome on WSL, check:
 
-`sudo apt install libgtk-3-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2`
+https://learn.microsoft.com/en-us/windows/wsl/tutorials/gui-apps#install-google-chrome-for-linux
 
 It fixed the authors issues (Ubuntu WSL 2).
